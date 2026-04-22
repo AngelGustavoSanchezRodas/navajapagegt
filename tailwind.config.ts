@@ -11,6 +11,12 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        brand: {
+          turquoise: "#43b5a9",
+          mustard: "#dfa135",
+          magenta: "#ce4a7e",
+          dark: "#3b3f46",
+        },
       },
     },
   },
