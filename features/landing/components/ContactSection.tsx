@@ -1,5 +1,6 @@
 import { CheckCircle2 } from "lucide-react";
 import { GlassCard } from "@/shared/components/ui/GlassCard";
+import { siteConfig, siteLinks } from "@/shared/config/site";
 
 const FEATURES = [
   "Sin límites de tamaño",
@@ -17,7 +18,7 @@ export function ContactSection() {
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
           <div className="relative z-10">
             <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-8">
-              Descubre NavajaGT <span className="text-brand-turquoise">Premium</span>
+              Descubre {siteConfig.name} <span className="text-brand-turquoise">Premium</span>
             </h2>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-8 mb-12">
@@ -30,12 +31,20 @@ export function ContactSection() {
             </div>
 
             <div className="flex flex-wrap gap-4">
-              <button className="w-full sm:w-auto px-10 py-5 bg-brand-magenta hover:bg-brand-magenta/90 text-white font-bold rounded-2xl shadow-xl shadow-brand-magenta/20 transition-all transform hover:-translate-y-1">
+              <a 
+                href={siteLinks.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto px-10 py-5 bg-brand-magenta hover:bg-brand-magenta/90 text-white text-center font-bold rounded-2xl shadow-xl shadow-brand-magenta/20 transition-all transform hover:-translate-y-1"
+              >
                 Actualizar a Premium
-              </button>
-              <button className="w-full sm:w-auto px-10 py-5 bg-white text-brand-turquoise font-bold rounded-2xl border border-brand-turquoise/20 hover:bg-slate-50 transition-all">
+              </a>
+              <a 
+                href={siteLinks.mailto}
+                className="w-full sm:w-auto px-10 py-5 bg-white text-brand-turquoise text-center font-bold rounded-2xl border border-brand-turquoise/20 hover:bg-slate-50 transition-all"
+              >
                 Contactar Soporte
-              </button>
+              </a>
             </div>
           </div>
 

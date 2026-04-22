@@ -1,9 +1,28 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@layer utilities {
-  .glass-panel {
-    @apply bg-white/80 backdrop-blur-md border border-white/40 shadow-xl shadow-black/5;
-  }
+@theme {
+  --color-brand-turquoise: #00E5FF;
+  --color-brand-mustard: #FFD500;
+  --color-brand-magenta: #FF0055;
+  --color-brand-dark: #0A0F1C;
+  --color-brand-darker: #05080F;
+  --color-brand-gray: #8B949E;
+}
+
+/* Glass Panel Utility (Standard CSS) */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
 }
