@@ -3,9 +3,14 @@
 import React, { useState, ChangeEvent } from 'react';
 import { MetadataBiolink, EnlaceItem } from '@/types/biolink';
 import { DEFAULT_BIOLINK_TEMPLATE } from '@/shared/constants/biolink-templates';
+import { apiFetch } from '@/shared/lib/api';
+import { Save, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
 const BiolinkBuilder: React.FC = () => {
   const [metadata, setMetadata] = useState<MetadataBiolink>(DEFAULT_BIOLINK_TEMPLATE);
+  const [aliasPersonalizado, setAliasPersonalizado] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   const handleProfileChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -35,6 +40,27 @@ const BiolinkBuilder: React.FC = () => {
     }));
   };
 
+  const handleSave = async () => {
+    setIsSubmitting(true);
+    setStatus(null);
+    try {
+      await apiFetch('/api/v1/core/enlaces', {
+        method: 'POST',
+        body: JSON.stringify({
+          aliasPersonalizado,
+          tipo: 'BIOLINK',
+          metadata: metadata
+        })
+      });
+      setStatus({ type: 'success', message: '¡Biolink guardado con éxito!' });
+      setTimeout(() => setStatus(null), 5000);
+    } catch (error: any) {
+      setStatus({ type: 'error', message: error.message || 'Error al guardar el Biolink' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const isDark = metadata.tema === 'DARK';
 
   return (
@@ -48,6 +74,19 @@ const BiolinkBuilder: React.FC = () => {
 
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Alias Personalizado</label>
+              <div className="flex items-center">
+                <span className="bg-zinc-100 border border-r-0 border-zinc-300 px-3 py-2 rounded-l-lg text-zinc-500 text-sm">navaja.gt/</span>
+                <input
+                  type="text"
+                  value={aliasPersonalizado}
+                  onChange={(e) => setAliasPersonalizado(e.target.value)}
+                  className="flex-1 px-4 py-2 border border-zinc-300 rounded-r-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                  placeholder="mi-alias"
+                />
+              </div>
+            </div>
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Título</label>
               <input
@@ -104,13 +143,13 @@ const BiolinkBuilder: React.FC = () => {
             <h3 className="font-bold text-zinc-900">Enlaces</h3>
             <button
               onClick={addLink}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm"
+              className="px-4 py-2 bg-zinc-100 text-zinc-700 rounded-lg text-sm font-semibold hover:bg-zinc-200 transition-colors"
             >
               + Agregar Enlace
             </button>
           </div>
 
-          <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
             {metadata.enlaces.map((link, index) => (
               <div key={link.id} className="p-4 bg-zinc-50 rounded-xl border border-zinc-200 space-y-3 relative group">
                 <button
@@ -141,6 +180,33 @@ const BiolinkBuilder: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {status && (
+          <div className={`p-4 rounded-xl flex items-center space-x-3 animate-in fade-in slide-in-from-top-2 ${
+            status.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'
+          }`}>
+            {status.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+            <span className="text-sm font-medium">{status.message}</span>
+          </div>
+        )}
+
+        <button
+          onClick={handleSave}
+          disabled={isSubmitting}
+          className="w-full flex items-center justify-center space-x-2 py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-indigo-200"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              <span>Guardando...</span>
+            </>
+          ) : (
+            <>
+              <Save className="w-5 h-5" />
+              <span>Guardar Biolink</span>
+            </>
+          )}
+        </button>
       </section>
 
       {/* Columna Derecha: Preview */}
@@ -153,10 +219,8 @@ const BiolinkBuilder: React.FC = () => {
           </div>
           
           <div className="w-[320px] h-[640px] rounded-[3rem] border-8 border-slate-900 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)] bg-white relative">
-            {/* Notch */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-2xl z-20"></div>
             
-            {/* Contenido del Smartphone */}
             <div className={`h-full overflow-y-auto pt-12 pb-8 px-6 transition-colors duration-300 ${
               isDark ? 'bg-zinc-950 text-white' : 'bg-zinc-50 text-zinc-900'
             }`}>

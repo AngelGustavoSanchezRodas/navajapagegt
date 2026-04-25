@@ -1,21 +1,46 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { Link, Loader2, QrCode } from "lucide-react";
+import { Link, Loader2, QrCode, Copy, Check } from "lucide-react";
 import { GlassCard } from "@/shared/components/ui/GlassCard";
+import { apiFetch } from "@/shared/lib/api";
 
 export function UrlShortenerTool() {
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successUrl, setSuccessUrl] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
+    setError(null);
+    setSuccessUrl(null);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      const response: any = await apiFetch('/api/v1/core/enlaces', {
+        method: 'POST',
+        body: JSON.stringify({ 
+          urlOriginal: url, 
+          tipo: 'STANDARD' 
+        })
+      });
+      
+      const baseUrl = window.location.origin;
+      setSuccessUrl(`${baseUrl}/${response.alias}`);
+    } catch (err: any) {
+      setError(err.message || "Ocurrió un error inesperado");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const copyToClipboard = () => {
+    if (successUrl) {
+      navigator.clipboard.writeText(successUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -58,6 +83,32 @@ export function UrlShortenerTool() {
           )}
         </button>
       </form>
+
+      {error && (
+        <div className="mt-4 p-4 bg-red-50 border border-red-100 text-red-600 rounded-2xl text-sm animate-in fade-in slide-in-from-top-2">
+          {error}
+        </div>
+      )}
+
+      {successUrl && (
+        <div className="mt-6 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl animate-in fade-in slide-in-from-top-4">
+          <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">¡Link generado!</p>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              readOnly
+              value={successUrl}
+              className="flex-1 bg-white/50 border-none outline-none text-sm text-slate-900 px-3 py-2 rounded-lg"
+            />
+            <button
+              onClick={copyToClipboard}
+              className="p-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+            >
+              {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+            </button>
+          </div>
+        </div>
+      )}
     </GlassCard>
   );
 }
