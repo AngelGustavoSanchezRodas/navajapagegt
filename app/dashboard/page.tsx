@@ -23,7 +23,7 @@ import OpenGraphPreview from '@/features/tools/components/OpenGraphPreview';
 
 const TOOLS = [
   {
-    id: 'acortador',
+    id: 'shortener',
     title: 'Acortador de URL',
     description: 'Links cortos y rastreables en segundos',
     icon: LinkIcon,
@@ -47,14 +47,6 @@ const TOOLS = [
     color: 'mustard'
   },
   {
-    id: 'wifi',
-    title: 'QR Wi-Fi',
-    description: 'Comparte tu red Wi-Fi sin revelar contraseñas',
-    icon: Wifi,
-    component: WifiQrGenerator,
-    color: 'turquoise'
-  },
-  {
     id: 'opengraph',
     title: 'OpenGraph Preview',
     description: 'Analiza cómo se ven tus links en redes sociales',
@@ -67,7 +59,7 @@ const TOOLS = [
 export default function DashboardPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const activeToolId = searchParams.get('tool') || 'acortador';
+  const activeToolId = searchParams.get('tool') || 'shortener';
 
   const activeTool = useMemo(() => 
     TOOLS.find(t => t.id === activeToolId) || TOOLS[0], 
