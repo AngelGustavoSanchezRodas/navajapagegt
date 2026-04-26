@@ -1,64 +1,134 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UrlShortenerTool } from '@/features/links/components/UrlShortenerTool';
 import BiolinkBuilder from '@/features/dashboard/components/BiolinkBuilder';
 import { WifiQrGenerator } from '@/features/tools/components/WifiQrGenerator';
 import { GlassCard } from '@/shared/components/ui/GlassCard';
-import { Link, Image as ImageIcon, Wifi } from 'lucide-react';
+import { useDashboard } from '@/shared/contexts/DashboardContext';
+import { 
+  Link as LinkIcon, 
+  Image as ImageIcon, 
+  Wifi, 
+  Sparkles, 
+  ArrowRight
+} from 'lucide-react';
 
 export default function DashboardPage() {
-  const [activeTool, setActiveTool] = useState('shortener');
+  const { activeTab, setActiveTab } = useDashboard();
+  const [currentDate, setCurrentDate] = useState('');
 
-  // Diccionario de Herramientas Completas
+  useEffect(() => {
+    const options: Intl.DateTimeFormatOptions = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    setCurrentDate(new Date().toLocaleDateString('es-ES', options));
+  }, []);
+
   const tools = [
-    { id: 'shortener', name: 'Acortador de Enlaces', icon: Link, component: <UrlShortenerTool /> },
-    { id: 'biolink', name: 'Constructor Biolink', icon: ImageIcon, component: <BiolinkBuilder /> },
-    { id: 'wifi', name: 'Generador QR Wi-Fi', icon: Wifi, component: <WifiQrGenerator /> },
+    { 
+      id: 'shortener', 
+      category: 'shortener',
+      name: 'Acortador de Enlaces', 
+      description: 'Crea enlaces cortos y mide su impacto con analíticas avanzadas.',
+      icon: LinkIcon, 
+      component: <UrlShortenerTool /> 
+    },
+    { 
+      id: 'biolink', 
+      category: 'biolink',
+      name: 'Constructor Biolink', 
+      description: 'Tu página personal optimizada para redes sociales con múltiples enlaces.',
+      icon: ImageIcon, 
+      component: <BiolinkBuilder /> 
+    },
+    { 
+      id: 'wifi', 
+      category: 'qr',
+      name: 'Generador QR Wi-Fi', 
+      description: 'Comparte tu conexión de forma segura sin revelar contraseñas.',
+      icon: Wifi, 
+      component: <WifiQrGenerator /> 
+    },
   ];
 
-  const activeComponent = tools.find(t => t.id === activeTool)?.component || <UrlShortenerTool />;
+  const filteredTools = activeTab === 'all' || activeTab === 'top'
+    ? tools 
+    : tools.filter(t => t.category === activeTab);
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'shortener':
+        return (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <UrlShortenerTool />
+          </div>
+        );
+      case 'biolink':
+        return (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <BiolinkBuilder />
+          </div>
+        );
+      case 'qr':
+        return (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <WifiQrGenerator />
+          </div>
+        );
+      case 'top':
+      case 'all':
+      default:
+        return (
+          <div className="flex flex-col gap-8 animate-in fade-in duration-700">
+            <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 text-brand-turquoise font-bold text-sm uppercase tracking-widest">
+                  <Sparkles size={16} />
+                  {activeTab === 'top' ? 'Lo más utilizado' : 'Todas las herramientas'}
+                </div>
+                <h1 className="text-4xl md:text-5xl font-[950] text-slate-900 tracking-tight">
+                  Bienvenido de nuevo
+                </h1>
+                <p className="text-slate-500 font-medium capitalize first-letter:uppercase">
+                  {currentDate}
+                </p>
+              </div>
+            </header>
+
+            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredTools.map((tool) => (
+                <button
+                  key={tool.id}
+                  onClick={() => setActiveTab(tool.id)}
+                  className="group text-left w-full transition-all duration-300 hover:-translate-y-2"
+                >
+                  <GlassCard className="p-8 h-full flex flex-col items-start gap-5 cursor-pointer rounded-[2rem] border-2 border-transparent group-hover:border-brand-turquoise/30 group-hover:shadow-[0_32px_64px_-16px_rgba(0,229,255,0.15)] transition-all">
+                    <div className="p-4 bg-slate-50 rounded-2xl text-slate-600 transition-colors group-hover:bg-brand-turquoise/10 group-hover:text-brand-turquoise">
+                      <tool.icon className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-900 text-xl mb-2">{tool.name}</h4>
+                      <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{tool.description}</p>
+                    </div>
+                    <div className="mt-auto pt-6 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-brand-turquoise opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
+                      Abrir Herramienta <ArrowRight size={14} />
+                    </div>
+                  </GlassCard>
+                </button>
+              ))}
+            </section>
+          </div>
+        );
+    }
+  };
 
   return (
-    <div className="flex flex-col gap-10 w-full max-w-6xl mx-auto py-10 px-4">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-black text-slate-900 tracking-tight">Mi Workspace</h1>
-        <p className="text-slate-500">Gestiona tus enlaces y herramientas digitales en un solo lugar.</p>
-      </header>
-
-      {/* Herramienta Activa (Arriba) */}
-      <section className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
-        {activeComponent}
-      </section>
-
-      {/* Explorador de Herramientas (Abajo) */}
-      <section className="w-full pt-8 border-t border-slate-200">
-        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">
-          Explorar otras herramientas
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {tools.filter(t => t.id !== activeTool).map((tool) => (
-            <button
-              key={tool.id}
-              onClick={() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-                setActiveTool(tool.id);
-              }}
-              className="text-left w-full transition-transform hover:scale-[1.02] active:scale-95"
-            >
-              <GlassCard className="p-6 flex items-center gap-4 cursor-pointer hover:bg-slate-50/50 transition-colors">
-                <div className="p-3 bg-brand-turquoise/10 rounded-xl text-brand-turquoise">
-                  <tool.icon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-800">{tool.name}</h4>
-                  <p className="text-xs text-slate-500">Cambiar a esta herramienta</p>
-                </div>
-              </GlassCard>
-            </button>
-          ))}
-        </div>
-      </section>
+    <div className="flex flex-col w-full max-w-6xl mx-auto py-12 px-6 lg:px-8 min-h-screen">
+      {renderContent()}
     </div>
   );
 }

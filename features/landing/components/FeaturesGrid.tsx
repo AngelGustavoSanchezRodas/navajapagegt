@@ -11,6 +11,7 @@ import { cn } from "@/shared/lib/utils";
 
 const TOOLS = [
   {
+    id: "shortener",
     title: "Acortador Inteligente",
     description: "Crea enlaces cortos, personalizados y rastreables en milisegundos con analíticas en tiempo real.",
     icon: Link,
@@ -18,6 +19,7 @@ const TOOLS = [
     bgColor: "bg-brand-turquoise/10",
   },
   {
+    id: "biolink",
     title: "Biolink Builder",
     description: "Diseña tu propia página de aterrizaje personalizada para tus redes sociales con un diseño premium.",
     icon: ImageIcon,
@@ -25,6 +27,7 @@ const TOOLS = [
     bgColor: "bg-brand-magenta/10",
   },
   {
+    id: "wifi",
     title: "Generador QR Wi-Fi",
     description: "Comparte tu conexión de red de forma segura mediante códigos QR listos para escanear.",
     icon: Wifi,
@@ -33,13 +36,17 @@ const TOOLS = [
   }
 ];
 
-export function FeaturesGrid() {
+export function FeaturesGrid({ onSelectTool }: { onSelectTool?: (id: string) => void }) {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {TOOLS.map((tool, index) => (
           <GlassCard 
             key={index} 
+            onClick={() => {
+              onSelectTool?.(tool.id);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             className="group flex h-full flex-col p-6 transition-all hover:-translate-y-1 hover:shadow-xl cursor-pointer border-slate-100/50"
           >
             <div className={cn(
@@ -59,3 +66,5 @@ export function FeaturesGrid() {
     </div>
   );
 }
+
+// Sync-ID: 2026-04-24
