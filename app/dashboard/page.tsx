@@ -11,8 +11,12 @@ import {
   Image as ImageIcon, 
   Sparkles, 
   ArrowRight,
-  QrCode
+  QrCode,
+  Zap,
+  Activity,
+  BarChart3
 } from 'lucide-react';
+import { cn } from "@/shared/lib/utils";
 
 export default function DashboardPage() {
   const { activeTab, setActiveTab } = useDashboard();
@@ -33,25 +37,25 @@ export default function DashboardPage() {
       id: 'shortener', 
       category: 'shortener',
       name: 'Acortador de Enlaces', 
-      description: 'Crea enlaces cortos y mide su impacto con analíticas avanzadas.',
+      description: 'Crea enlaces cortos inteligentes con analíticas en tiempo real.',
       icon: LinkIcon, 
-      component: <UrlShortenerTool /> 
+      color: 'bg-brand-turquoise/10 text-brand-turquoise'
     },
     { 
       id: 'biolink', 
       category: 'biolink',
       name: 'Constructor Biolink', 
-      description: 'Tu página personal optimizada para redes sociales con múltiples enlaces.',
+      description: 'Tu página personal premium optimizada para conversión.',
       icon: ImageIcon, 
-      component: <BiolinkBuilder /> 
+      color: 'bg-brand-magenta/10 text-brand-magenta'
     },
     { 
       id: 'qr', 
       category: 'qr',
       name: 'Generador QR Pro', 
-      description: 'Crea códigos QR multipropósito para enlaces, teléfonos y correos electrónicos.',
+      description: 'Códigos QR multipropósito dinámicos y personalizables.',
       icon: QrCode, 
-      component: <ContactQrTool /> 
+      color: 'bg-brand-mustard/10 text-brand-mustard'
     },
   ];
 
@@ -59,23 +63,29 @@ export default function DashboardPage() {
     ? tools 
     : tools.filter(t => t.category === activeTab);
 
+  const stats = [
+    { label: 'Clics totales', value: '1,284', icon: Activity, trend: '+12%' },
+    { label: 'Biolinks activos', value: '3', icon: Zap, trend: '+1' },
+    { label: 'Tasa conv.', value: '24.2%', icon: BarChart3, trend: '+4.5%' },
+  ];
+
   const renderContent = () => {
     switch (activeTab) {
       case 'shortener':
         return (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
             <UrlShortenerTool />
           </div>
         );
       case 'biolink':
         return (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
             <BiolinkBuilder />
           </div>
         );
       case 'qr':
         return (
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
             <ContactQrTool />
           </div>
         );
@@ -83,39 +93,52 @@ export default function DashboardPage() {
       case 'all':
       default:
         return (
-          <div className="flex flex-col gap-8 animate-in fade-in duration-700">
-            <header className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-brand-turquoise font-bold text-sm uppercase tracking-widest">
-                  <Sparkles size={16} />
-                  {activeTab === 'top' ? 'Lo más utilizado' : 'Todas las herramientas'}
+          <div className="flex flex-col gap-10 animate-in fade-in duration-700">
+            <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2.5 text-brand-turquoise font-black text-[10px] uppercase tracking-[0.25em]">
+                  <Sparkles size={14} className="animate-pulse" />
+                  Centro de Control
                 </div>
-                <h1 className="text-4xl md:text-5xl font-[950] text-slate-900 tracking-tight">
+                <h1 className="text-5xl md:text-6xl font-[1000] text-slate-900 tracking-[-0.04em] leading-tight">
                   Bienvenido de nuevo
                 </h1>
-                <p className="text-slate-500 font-medium capitalize first-letter:uppercase">
+                <p className="text-slate-400 font-bold text-lg capitalize">
                   {currentDate}
                 </p>
               </div>
+
+              <div className="flex flex-wrap gap-4">
+                {stats.map((stat) => (
+                  <div key={stat.label} className="flex flex-col gap-1 rounded-2xl bg-white border border-slate-100 p-5 shadow-sm min-w-[140px]">
+                    <div className="flex items-center justify-between">
+                      <stat.icon size={18} className="text-slate-400" />
+                      <span className="text-[10px] font-black text-emerald-500">{stat.trend}</span>
+                    </div>
+                    <span className="text-2xl font-black text-slate-900">{stat.value}</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{stat.label}</span>
+                  </div>
+                ))}
+              </div>
             </header>
 
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredTools.map((tool) => (
                 <button
                   key={tool.id}
                   onClick={() => setActiveTab(tool.id)}
-                  className="group text-left w-full transition-all duration-300 hover:-translate-y-2"
+                  className="group text-left w-full transition-all duration-500 hover:-translate-y-2"
                 >
-                  <GlassCard className="p-8 h-full flex flex-col items-start gap-5 cursor-pointer rounded-[2rem] border-2 border-transparent group-hover:border-brand-turquoise/30 group-hover:shadow-[0_32px_64px_-16px_rgba(0,229,255,0.15)] transition-all">
-                    <div className="p-4 bg-slate-50 rounded-2xl text-slate-600 transition-colors group-hover:bg-brand-turquoise/10 group-hover:text-brand-turquoise">
+                  <GlassCard className="p-8 h-full flex flex-col items-start gap-6 cursor-pointer rounded-[2.5rem] border-2 border-transparent transition-all group-hover:border-brand-turquoise/20 group-hover:shadow-[0_40px_80px_-16px_rgba(0,0,0,0.1)]">
+                    <div className={cn("p-5 rounded-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3", tool.color)}>
                       <tool.icon className="w-8 h-8" />
                     </div>
                     <div>
-                      <h4 className="font-bold text-slate-900 text-xl mb-2">{tool.name}</h4>
-                      <p className="text-sm text-slate-500 leading-relaxed line-clamp-2">{tool.description}</p>
+                      <h4 className="font-black text-slate-900 text-2xl mb-3 tracking-tight">{tool.name}</h4>
+                      <p className="text-slate-500 font-medium leading-relaxed">{tool.description}</p>
                     </div>
-                    <div className="mt-auto pt-6 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-brand-turquoise opacity-0 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
-                      Abrir Herramienta <ArrowRight size={14} />
+                    <div className="mt-auto pt-8 flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] text-brand-turquoise opacity-60 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">
+                      Abrir Herramienta <ArrowRight size={16} />
                     </div>
                   </GlassCard>
                 </button>
@@ -127,7 +150,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-6xl mx-auto py-12 px-6 lg:px-8 min-h-screen">
+    <div className="flex flex-col w-full max-w-7xl mx-auto py-16 px-6 lg:px-10 min-h-screen">
       {renderContent()}
     </div>
   );

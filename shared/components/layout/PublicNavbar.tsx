@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Cookies from "js-cookie";
-import { User, LayoutDashboard, Settings, LogOut, ChevronDown } from "lucide-react";
+import { User, LayoutDashboard, Settings, LogOut, ChevronDown, Sparkles } from "lucide-react";
 import { authService } from "@/modules/auth/services/auth.service";
 import { siteConfig } from "@/shared/config/site";
 import { cn } from "@/shared/lib/utils";
@@ -42,98 +42,117 @@ export function PublicNavbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-200/40 bg-white/70 backdrop-blur-md transition-all duration-300">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/40 bg-white/80 backdrop-blur-md transition-all duration-300">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link 
           href="/" 
-          className="group flex items-center gap-2 text-xl font-bold text-brand-turquoise transition-transform hover:scale-105"
+          className="group flex items-center gap-2 text-xl font-extrabold transition-transform hover:scale-105"
         >
-          <span className="bg-gradient-to-r from-brand-turquoise to-emerald-500 bg-clip-text text-transparent">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-turquoise text-white shadow-lg shadow-brand-turquoise/20">
+            <Sparkles size={18} fill="currentColor" />
+          </div>
+          <span className="bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
             {siteConfig.name}
           </span>
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {!isMounted ? (
             <div className="h-10 w-32 animate-pulse rounded-full bg-slate-100" />
           ) : (
             <AnimatePresence mode="wait">
               {isAuthenticated ? (
-                <div className="relative">
-                  <motion.button
-                    key="auth-trigger"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className={cn(
-                      "group flex items-center gap-2 rounded-full border p-1 pr-3 transition-all active:scale-95",
-                      isDropdownOpen 
-                        ? "border-brand-turquoise bg-brand-turquoise/5 ring-4 ring-brand-turquoise/10" 
-                        : "border-slate-200 bg-white hover:border-slate-300"
-                    )}
+                <motion.div 
+                  key="auth-ui"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex items-center gap-3"
+                >
+                  <Link 
+                    href="/dashboard"
+                    className="hidden sm:flex items-center gap-2 rounded-full bg-slate-900 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-slate-800 hover:shadow-xl hover:shadow-slate-200 active:scale-95"
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors group-hover:bg-brand-turquoise/10 group-hover:text-brand-turquoise">
-                      <User size={18} />
-                    </div>
-                    <ChevronDown size={14} className={cn("text-slate-400 transition-transform duration-300", isDropdownOpen && "rotate-180")} />
-                  </motion.button>
+                    <LayoutDashboard size={18} />
+                    <span>Ir a mi Workspace</span>
+                  </Link>
 
-                  <AnimatePresence>
-                    {isDropdownOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute right-0 mt-2 w-56 overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl ring-1 ring-black/5"
-                      >
-                        <div className="px-3 py-2 mb-2 border-b border-slate-50">
-                          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Cuenta</p>
-                        </div>
-                        
-                        {dropdownItems.map((item) => (
-                          <Link
-                            key={item.label}
-                            href={item.href}
-                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600 transition-all hover:bg-slate-50 hover:text-brand-turquoise"
-                          >
-                            <item.icon size={18} />
-                            {item.label}
-                          </Link>
-                        ))}
-                        
-                        <div className="my-2 border-t border-slate-100" />
-                        
-                        <button
-                          onClick={handleLogout}
-                          className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-red-500 transition-all hover:bg-red-50"
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className={cn(
+                        "group flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all active:scale-95 overflow-hidden",
+                        isDropdownOpen 
+                          ? "border-brand-turquoise ring-4 ring-brand-turquoise/10" 
+                          : "border-slate-100 hover:border-brand-turquoise/30 hover:bg-slate-50"
+                      )}
+                    >
+                      <div className="flex h-full w-full items-center justify-center bg-slate-100 text-slate-600 transition-colors group-hover:text-brand-turquoise">
+                        <User size={20} />
+                      </div>
+                    </button>
+
+                    <AnimatePresence>
+                      {isDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 12, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 12, scale: 0.95 }}
+                          className="absolute right-0 mt-3 w-64 overflow-hidden rounded-2xl border border-slate-200/60 bg-white p-2 shadow-2xl ring-1 ring-black/5"
                         >
-                          <LogOut size={18} />
-                          Cerrar Sesión
-                        </button>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                          <div className="px-4 py-3 mb-2 border-b border-slate-50">
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Panel de Usuario</p>
+                          </div>
+                          
+                          {dropdownItems.map((item) => (
+                            <Link
+                              key={item.label}
+                              href={item.href}
+                              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-slate-600 transition-all hover:bg-slate-50 hover:text-brand-turquoise"
+                            >
+                              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-50 text-slate-400 transition-colors group-hover:bg-brand-turquoise/10 group-hover:text-brand-turquoise">
+                                <item.icon size={18} />
+                              </div>
+                              {item.label}
+                            </Link>
+                          ))}
+                          
+                          <div className="my-2 border-t border-slate-100" />
+                          
+                          <button
+                            onClick={handleLogout}
+                            className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold text-red-500 transition-all hover:bg-red-50"
+                          >
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 text-red-400 transition-colors group-hover:bg-red-100 group-hover:text-red-600">
+                              <LogOut size={18} />
+                            </div>
+                            Cerrar Sesión
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </motion.div>
               ) : (
                 <motion.nav
-                  key="guest"
-                  initial={{ opacity: 0, x: 10 }}
+                  key="guest-ui"
+                  initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 10 }}
+                  exit={{ opacity: 0, x: 20 }}
                   className="flex items-center gap-3"
                   aria-label="Navegación principal"
                 >
                   <Link
                     href="/login"
-                    className="rounded-full px-5 py-2 text-sm font-medium text-slate-600 transition-all hover:bg-slate-100 hover:text-slate-900"
+                    className="rounded-full px-5 py-2.5 text-sm font-bold text-slate-600 transition-all hover:bg-slate-50 hover:text-brand-turquoise active:scale-95"
                   >
                     Iniciar Sesión
                   </Link>
                   <Link
                     href="/register"
-                    className="rounded-full bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 hover:shadow-xl active:scale-95"
+                    className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-brand-turquoise px-6 py-2.5 text-sm font-bold text-white transition-all hover:shadow-[0_8px_30px_rgb(45,212,191,0.3)] hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
                   >
-                    Registrarse
+                    <span className="relative z-10">Registrarse</span>
+                    <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
                   </Link>
                 </motion.nav>
               )}
