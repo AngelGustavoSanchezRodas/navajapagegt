@@ -1,11 +1,7 @@
 import NextLink from "next/link";
 import { 
   Link as LinkIcon,
-  Image as ImageIcon,
-  Wifi,
-  Zap,
-  Globe,
-  ShieldCheck
+  Image as ImageIcon
 } from "lucide-react";
 import { GlassCard } from "@/shared/components/ui/GlassCard";
 import { cn } from "@/shared/lib/utils";
@@ -28,15 +24,6 @@ const TOOLS = [
     color: "text-brand-magenta",
     bgColor: "bg-brand-magenta/10",
     href: "/herramientas/biolink"
-  },
-  {
-    id: "wifi",
-    title: "Generador QR Wi-Fi",
-    description: "Comparte tu conexión de red de forma segura mediante códigos QR listos para escanear.",
-    icon: Wifi,
-    color: "text-brand-turquoise",
-    bgColor: "bg-brand-turquoise/10",
-    href: "/herramientas/qr-wifi"
   }
 ];
 

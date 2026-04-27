@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { UrlShortenerTool } from "@/features/links/components/UrlShortenerTool";
 import BiolinkBuilder from "@/features/dashboard/components/BiolinkBuilder";
-import { ContactQrTool } from "@/features/tools/components/ContactQrTool";
 import { BackgroundGlow } from "@/shared/components/ui/BackgroundGlow";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -24,8 +23,6 @@ export default function ToolPage() {
         return <UrlShortenerTool />;
       case "biolink":
         return <BiolinkBuilder />;
-      case "qr-wifi":
-        return <ContactQrTool />;
       default:
         return (
           <div className="text-center py-20">
@@ -42,7 +39,6 @@ export default function ToolPage() {
     switch (toolId) {
       case "acortador": return "Acortador de Enlaces";
       case "biolink": return "Biolink Builder";
-      case "qr-wifi": return "Generador QR Wi-Fi";
       default: return "Herramienta";
     }
   };
