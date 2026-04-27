@@ -7,6 +7,7 @@ import { apiFetch } from "@/shared/lib/api";
 
 export function UrlShortenerTool() {
   const [url, setUrl] = useState("");
+  const [alias, setAlias] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successAlias, setSuccessAlias] = useState<string | null>(null);
@@ -23,13 +24,18 @@ export function UrlShortenerTool() {
         method: 'POST',
         body: JSON.stringify({ 
           urlOriginal: url, 
-          tipo: 'STANDARD' 
+          tipo: 'STANDARD',
+          alias: alias || null
         })
       });
       
       setSuccessAlias(response.alias);
     } catch (err: any) {
-      setError(err.message || "Ocurrió un error inesperado");
+      if (err.status === 400 || err.status === 409) {
+        setError("El alias ya está en uso o es inválido");
+      } else {
+        setError(err.message || "Ocurrió un error inesperado");
+      }
     } finally {
       setLoading(false);
     }
@@ -64,6 +70,20 @@ export function UrlShortenerTool() {
             placeholder="Pega tu enlace largo aquí..."
             className="h-14 w-full rounded-2xl bg-white/50 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-turquoise/20 placeholder:text-slate-400"
             required
+          />
+        </div>
+
+        <div className="relative flex items-center">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+            <span className="text-sm font-bold text-slate-400 italic">@</span>
+          </div>
+          <input
+            id="shortener-alias"
+            type="text"
+            value={alias}
+            onChange={(event) => setAlias(event.target.value)}
+            placeholder="Alias personalizado (opcional)"
+            className="h-14 w-full rounded-2xl bg-white/50 pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-brand-turquoise/20 placeholder:text-slate-400"
           />
         </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { Wifi, Loader2, Download, QrCode } from 'lucide-react';
 import { GlassCard } from '@/shared/components/ui/GlassCard';
 import { apiFetch } from '@/shared/lib/api';
@@ -92,7 +93,14 @@ export const WifiQrGenerator = () => {
       {qrImageUrl && (
         <div className="mt-8 flex flex-col items-center animate-in fade-in zoom-in-95 duration-300">
           <div className="p-4 bg-white rounded-2xl shadow-inner border border-slate-100">
-            <img src={qrImageUrl} alt="Wi-Fi QR Code" className="w-48 h-48" />
+            <Image 
+              src={qrImageUrl} 
+              alt="Wi-Fi QR Code" 
+              width={192} 
+              height={192} 
+              className="rounded-xl" 
+              unoptimized 
+            />
           </div>
           <a
             href={qrImageUrl}

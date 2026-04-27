@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { EnlaceResponse } from '@/types/biolink';
+import Image from 'next/image';
 import { siteConfig } from '@/shared/config/site';
 
 interface Props {
@@ -70,11 +71,14 @@ export default async function BioPage({ params }: Props) {
         {/* Profile Header */}
         <div className="flex flex-col items-center space-y-4">
           {avatarUrl && (
-            <img
+            <Image
               src={avatarUrl}
               alt={titulo}
+              width={96}
+              height={96}
               className="w-24 h-24 rounded-full object-cover border-2 shadow-xl"
               style={{ borderColor: colorPrincipal }}
+              unoptimized
             />
           )}
           <div className="space-y-2">

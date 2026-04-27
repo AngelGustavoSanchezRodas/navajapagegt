@@ -3,15 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import { UrlShortenerTool } from '@/features/links/components/UrlShortenerTool';
 import BiolinkBuilder from '@/features/dashboard/components/BiolinkBuilder';
-import { WifiQrGenerator } from '@/features/tools/components/WifiQrGenerator';
+import { ContactQrTool } from '@/features/tools/components/ContactQrTool';
 import { GlassCard } from '@/shared/components/ui/GlassCard';
 import { useDashboard } from '@/shared/contexts/DashboardContext';
 import { 
   Link as LinkIcon, 
   Image as ImageIcon, 
-  Wifi, 
   Sparkles, 
-  ArrowRight
+  ArrowRight,
+  QrCode
 } from 'lucide-react';
 
 export default function DashboardPage() {
@@ -46,12 +46,12 @@ export default function DashboardPage() {
       component: <BiolinkBuilder /> 
     },
     { 
-      id: 'wifi', 
+      id: 'qr', 
       category: 'qr',
-      name: 'Generador QR Wi-Fi', 
-      description: 'Comparte tu conexión de forma segura sin revelar contraseñas.',
-      icon: Wifi, 
-      component: <WifiQrGenerator /> 
+      name: 'Generador QR Pro', 
+      description: 'Crea códigos QR multipropósito para enlaces, teléfonos y correos electrónicos.',
+      icon: QrCode, 
+      component: <ContactQrTool /> 
     },
   ];
 
@@ -76,7 +76,7 @@ export default function DashboardPage() {
       case 'qr':
         return (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <WifiQrGenerator />
+            <ContactQrTool />
           </div>
         );
       case 'top':

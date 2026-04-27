@@ -3,14 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Cookies from 'js-cookie';
-import { User, ArrowRight } from 'lucide-react';
+import { User } from 'lucide-react';
 import { BackgroundGlow } from "@/shared/components/ui/BackgroundGlow";
 import { FeaturesGrid } from "@/features/landing/components/FeaturesGrid";
 import { BenefitsSection } from "@/features/landing/components/BenefitsSection";
-import { ContactSection } from "@/features/landing/components/ContactSection";
 import { UrlShortenerTool } from "@/features/links/components/UrlShortenerTool";
 import BiolinkBuilder from '@/features/dashboard/components/BiolinkBuilder';
-import { WifiQrGenerator } from '@/features/tools/components/WifiQrGenerator';
+import { ContactQrTool } from '@/features/tools/components/ContactQrTool';
 
 export default function Home() {
   const [activeTool, setActiveTool] = useState("shortener");
@@ -57,8 +56,8 @@ export default function Home() {
     switch (activeTool) {
       case 'biolink':
         return <BiolinkBuilder />;
-      case 'wifi':
-        return <WifiQrGenerator />;
+      case 'qr':
+        return <ContactQrTool />;
       default:
         return <UrlShortenerTool />;
     }
@@ -128,9 +127,6 @@ export default function Home() {
 
         {/* Benefits Section */}
         <BenefitsSection />
-
-        {/* Contact/Premium Section */}
-        <ContactSection />
       </div>
     </main>
   );

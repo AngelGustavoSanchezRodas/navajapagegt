@@ -4,6 +4,7 @@ import React, { useState, ChangeEvent } from 'react';
 import { MetadataBiolink, EnlaceItem } from '@/types/biolink';
 import { DEFAULT_BIOLINK_TEMPLATE } from '@/shared/constants/biolink-templates';
 import { apiFetch } from '@/shared/lib/api';
+import Image from 'next/image';
 import { Save, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
 const BiolinkBuilder: React.FC = () => {
@@ -226,11 +227,14 @@ const BiolinkBuilder: React.FC = () => {
             }`}>
               <div className="flex flex-col items-center text-center space-y-4">
                 {metadata.avatarUrl && (
-                  <img
+                  <Image
                     src={metadata.avatarUrl}
                     alt="Preview Avatar"
-                    className="w-20 h-20 rounded-full object-cover border-2 shadow-md"
+                    width={80}
+                    height={80}
+                    className="rounded-full object-cover border-2 shadow-md"
                     style={{ borderColor: metadata.colorPrincipal }}
+                    unoptimized
                   />
                 )}
                 <div className="space-y-1">

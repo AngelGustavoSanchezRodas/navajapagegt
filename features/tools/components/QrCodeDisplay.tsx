@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { GlassCard } from '@/shared/components/ui/GlassCard';
+import Image from 'next/image';
 import { QrCode, Download, Loader2 } from 'lucide-react';
 
 interface Props {
@@ -52,11 +53,13 @@ const QrCodeDisplay: React.FC<Props> = ({ text: initialText }) => {
       {text && (
         <GlassCard className="flex flex-col items-center justify-center space-y-6 p-8 bg-white/40 backdrop-blur-xl border border-white/20 animate-in fade-in zoom-in-95">
           <div className="relative p-4 bg-white rounded-2xl shadow-inner border border-zinc-100">
-            <img
+            <Image
               src={qrUrl}
               alt={`Código QR para ${text}`}
-              className="w-48 h-48 rounded-lg"
-              loading="lazy"
+              width={192}
+              height={192}
+              className="rounded-lg"
+              unoptimized
             />
           </div>
           
