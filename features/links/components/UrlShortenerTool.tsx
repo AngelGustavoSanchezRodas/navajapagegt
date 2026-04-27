@@ -1,10 +1,12 @@
 "use client";
 
 import { FormEvent, useState, useRef } from "react";
-import { Link, Loader2, QrCode, Copy, Check, ExternalLink, Settings2, RefreshCcw } from "lucide-react";
+import { Link, Loader2, QrCode, Copy, Check, ExternalLink, Settings2, RefreshCcw, Lock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { GlassCard } from "@/shared/components/ui/GlassCard";
 import { apiFetch } from "@/shared/lib/api";
+import { useAuth } from "@/shared/contexts/AuthContext";
+import { ProUpgradeModal } from "@/shared/components/ui/ProUpgradeModal";
 
 interface ShortenResponse {
   alias: string;
@@ -20,7 +22,11 @@ export function UrlShortenerTool() {
   const [successAlias, setSuccessAlias] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState<string | undefined>();
   const resultInputRef = useRef<HTMLInputElement>(null);
+  
+  const { plan } = useAuth();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,7 +47,10 @@ export function UrlShortenerTool() {
       setSuccessAlias(response.alias);
     } catch (err: unknown) {
       const apiError = err as { status?: number; message?: string };
-      if (apiError.status === 400 || apiError.status === 409) {
+      if (apiError.status === 402 || apiError.status === 403) {
+        setModalMessage(apiError.message || "Tu plan actual no permite realizar esta acción");
+        setIsModalOpen(true);
+      } else if (apiError.status === 400 || apiError.status === 409 || apiError.message?.includes('ALIAS_EN_USO')) {
         setError("El alias ya está en uso o es inválido");
       } else {
         setError(apiError.message || "Ocurrió un error inesperado");
@@ -126,7 +135,13 @@ export function UrlShortenerTool() {
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="relative flex items-center pt-1 pb-2">
+                <div 
+                  className="relative flex items-center pt-1 pb-2"
+                  onClick={plan === 'FREE' ? () => {
+                    setModalMessage("Actualiza a PRO para usar alias personalizados");
+                    setIsModalOpen(true);
+                  } : undefined}
+                >
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-5 pt-1">
                     <span className="text-sm font-bold text-slate-400 italic">@</span>
                   </div>
@@ -136,8 +151,18 @@ export function UrlShortenerTool() {
                     value={alias}
                     onChange={(event) => setAlias(event.target.value)}
                     placeholder="Alias personalizado (opcional)"
-                    className="h-16 w-full rounded-2xl bg-slate-50 border border-transparent pl-12 pr-4 text-base text-slate-900 outline-none transition-all focus:bg-white focus:border-brand-turquoise/30 focus:ring-4 focus:ring-brand-turquoise/5 placeholder:text-slate-400 font-medium"
+                    disabled={plan === 'FREE'}
+                    className={`h-16 w-full rounded-2xl border border-transparent pl-12 pr-10 text-base outline-none transition-all focus:ring-4 font-medium ${
+                      plan === 'FREE' 
+                        ? 'bg-slate-100 text-slate-400 cursor-not-allowed' 
+                        : 'bg-slate-50 text-slate-900 focus:bg-white focus:border-brand-turquoise/30 focus:ring-brand-turquoise/5 placeholder:text-slate-400'
+                    }`}
                   />
+                  {plan === 'FREE' && (
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none pb-1">
+                      <Lock className="h-4 w-4 text-slate-400" />
+                    </div>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -211,6 +236,12 @@ export function UrlShortenerTool() {
           {error}
         </div>
       )}
+
+      <ProUpgradeModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        message={modalMessage} 
+      />
     </div>
   );
 }

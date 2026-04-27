@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  plan: 'FREE' | 'PRO';
   login: (token: string) => void;
   logout: () => void;
 }
@@ -18,6 +19,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     return false;
   });
+  
+  // Dummy state for plan. In a real app this would come from a decoded JWT or /me endpoint.
+  const [plan] = useState<'FREE' | 'PRO'>('FREE');
 
   const login = (token: string) => {
     Cookies.set("token", token, { expires: 7 }); // 7 días
@@ -30,7 +34,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, plan, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

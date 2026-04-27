@@ -34,7 +34,9 @@ export async function apiFetch<T>(endpoint: string, options: ApiOptions = {}): P
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData?.message || 'Error en la comunicación con el servidor');
+    const error = new Error(errorData?.message || 'Error en la comunicación con el servidor') as Error & { status?: number };
+    error.status = response.status;
+    throw error;
   }
 
   if (responseType === 'blob') {
