@@ -6,6 +6,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { GlassCard } from "@/shared/components/ui/GlassCard";
 import { apiFetch } from "@/shared/lib/api";
 
+interface ShortenResponse {
+  alias: string;
+  urlOriginal: string;
+  shortUrl?: string;
+}
+
 export function UrlShortenerTool() {
   const [url, setUrl] = useState("");
   const [alias, setAlias] = useState("");
@@ -23,7 +29,7 @@ export function UrlShortenerTool() {
     setSuccessAlias(null);
 
     try {
-      const response: any = await apiFetch('/api/core/links/create/', {
+      const response = await apiFetch<ShortenResponse>('/api/core/links/create/', {
         method: 'POST',
         body: JSON.stringify({ 
           urlOriginal: url, 
@@ -33,11 +39,12 @@ export function UrlShortenerTool() {
       });
       
       setSuccessAlias(response.alias);
-    } catch (err: any) {
-      if (err.status === 400 || err.status === 409) {
+    } catch (err: unknown) {
+      const apiError = err as { status?: number; message?: string };
+      if (apiError.status === 400 || apiError.status === 409) {
         setError("El alias ya está en uso o es inválido");
       } else {
-        setError(err.message || "Ocurrió un error inesperado");
+        setError(apiError.message || "Ocurrió un error inesperado");
       }
     } finally {
       setLoading(false);

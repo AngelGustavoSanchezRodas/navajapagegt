@@ -6,8 +6,18 @@ if (!process.env.NEXT_PUBLIC_API_URL) {
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/auth`;
 
+export interface AuthResponse {
+  token?: string;
+  message?: string;
+  user?: {
+    id: string;
+    nombre: string;
+    email: string;
+  };
+}
+
 class AuthService {
-  async login(email: string, password: string) {
+  async login(email: string, password: string): Promise<AuthResponse> {
     const response = await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: {
@@ -16,7 +26,7 @@ class AuthService {
       body: JSON.stringify({ email, contrasena: password }),
     });
 
-    const data = await response.json();
+    const data: AuthResponse = await response.json();
 
     if (!response.ok) {
       throw new Error(data?.message || "Error al iniciar sesión");
@@ -29,7 +39,7 @@ class AuthService {
     return data;
   }
 
-  async register(nombre: string, email: string, password: string) {
+  async register(nombre: string, email: string, password: string): Promise<AuthResponse> {
     const response = await fetch(`${API_URL}/register`, {
       method: "POST",
       headers: {
@@ -38,7 +48,7 @@ class AuthService {
       body: JSON.stringify({ nombre, email, contrasena: password }),
     });
 
-    const data = await response.json();
+    const data: AuthResponse = await response.json();
 
     if (!response.ok) {
       throw new Error(data?.message || "Error al registrar usuario");
