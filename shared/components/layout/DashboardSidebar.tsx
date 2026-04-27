@@ -42,9 +42,20 @@ export function DashboardSidebar() {
   return (
     <aside className="hidden md:flex w-64 flex-col bg-white border-r border-slate-200/60 sticky top-0 h-screen transition-all duration-300">
       <div className="p-8">
-        <Link href="/" className="group flex items-center gap-2 text-2xl font-black text-brand-turquoise tracking-tighter">
-          Navaja<span className="text-slate-900 transition-colors group-hover:text-brand-turquoise">GT</span>
-        </Link>
+        <div className="flex items-center gap-2 font-black text-xl tracking-tight">
+          <Link href="/" className="text-brand-turquoise hover:opacity-80 transition-opacity">
+            NavajaGT
+          </Link>
+          <span className="text-slate-300 text-sm">✕</span>
+          <a 
+            href="https://aba-page-nine.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-slate-500 text-sm hover:text-brand-turquoise transition-colors pt-0.5"
+          >
+            ABA Estudios
+          </a>
+        </div>
       </div>
 
       <nav className="flex-1 px-4 space-y-8">

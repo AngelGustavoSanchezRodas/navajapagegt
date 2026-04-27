@@ -41,17 +41,20 @@ export function PublicNavbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/40 bg-white/80 backdrop-blur-md transition-all duration-300">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link 
-          href="/" 
-          className="group flex items-center gap-2 text-xl font-extrabold transition-transform hover:scale-105"
-        >
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-brand-turquoise text-white shadow-lg shadow-brand-turquoise/20">
-            <Sparkles size={18} fill="currentColor" />
-          </div>
-          <span className="bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
-            {siteConfig.name}
-          </span>
-        </Link>
+        <div className="flex items-center gap-2 font-black text-xl tracking-tight">
+          <Link href="/" className="text-brand-turquoise hover:opacity-80 transition-opacity">
+            NavajaGT
+          </Link>
+          <span className="text-slate-300 text-sm">✕</span>
+          <a 
+            href="https://aba-page-nine.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-slate-500 text-sm hover:text-brand-turquoise transition-colors pt-0.5"
+          >
+            ABA Estudios
+          </a>
+        </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
           {!isMounted ? (
