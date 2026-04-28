@@ -5,7 +5,7 @@ import { MetadataBiolink, EnlaceItem } from '@/types/biolink';
 import { DEFAULT_BIOLINK_TEMPLATE } from '@/shared/constants/biolink-templates';
 import { apiFetch } from '@/shared/lib/api';
 import Image from 'next/image';
-import { Save, Loader2, CheckCircle, AlertCircle, Copy, Check } from 'lucide-react';
+import { Save, Loader2, CheckCircle, AlertCircle, Copy, Check, ExternalLink } from 'lucide-react';
 import { useAuth } from '@/shared/contexts/AuthContext';
 import { ProUpgradeModal } from '@/shared/components/ui/ProUpgradeModal';
 
@@ -23,12 +23,12 @@ function useDebounce<T>(value: T, delay: number): T {
 const BiolinkBuilder: React.FC = () => {
   const [metadata, setMetadata] = useState<MetadataBiolink>(DEFAULT_BIOLINK_TEMPLATE);
   const [aliasPersonalizado, setAliasPersonalizado] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
-  const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [view, setView] = useState<'editing' | 'saving' | 'success' | 'upgrade'>('editing');
+  const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
   const [modalMessage, setModalMessage] = useState<string | undefined>();
-  const [copied, setCopied] = useState(false);
   const [aliasError, setAliasError] = useState(false);
+  const [globalError, setGlobalError] = useState<string | null>(null);
   
   const { plan } = useAuth();
   
@@ -63,8 +63,8 @@ const BiolinkBuilder: React.FC = () => {
   };
 
   const handleSave = async () => {
-    setIsSaving(true);
-    setStatus(null);
+    setView('saving');
+    setGlobalError(null);
     setAliasError(false);
 
     const payloadMetadata = {
@@ -80,7 +80,7 @@ const BiolinkBuilder: React.FC = () => {
     };
 
     try {
-      await apiFetch('/api/core/links/create/', {
+      const respuesta = await apiFetch<{ alias: string }>('/api/core/links/create/', {
         method: 'POST',
         body: JSON.stringify({
           aliasPersonalizado: aliasPersonalizado || null,
@@ -88,29 +88,29 @@ const BiolinkBuilder: React.FC = () => {
           metadata: payloadMetadata
         })
       });
-      setStatus({ type: 'success', message: '¡Biolink guardado con éxito!' });
+      setPublishedUrl(respuesta.alias || aliasPersonalizado);
+      setView('success');
     } catch (error: unknown) {
       const apiError = error as { status?: number; message?: string };
       if (apiError.status === 402 || apiError.status === 403) {
         setModalMessage(apiError.message || "Tu plan actual no permite realizar esta acción");
-        setIsModalOpen(true);
+        setView('upgrade');
       } else if (apiError.status === 409) {
         setAliasError(true);
-        setStatus({ type: 'error', message: 'El alias ya está en uso. Intenta con otro.' });
+        setView('editing');
       } else {
-        setStatus({ type: 'error', message: apiError.message || 'Error al guardar el Biolink' });
+        setGlobalError(apiError.message || 'Error al guardar el Biolink');
+        setView('editing');
       }
-    } finally {
-      setIsSaving(false);
     }
   };
 
   const copyToClipboard = () => {
-    if (aliasPersonalizado) {
-      const url = `${window.location.origin}/bio/${aliasPersonalizado}`;
+    if (publishedUrl) {
+      const url = `${window.location.origin}/bio/${publishedUrl}`;
       navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
     }
   };
 
@@ -118,28 +118,77 @@ const BiolinkBuilder: React.FC = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 max-w-7xl mx-auto min-h-screen bg-zinc-50/50">
-      {/* Columna Izquierda: Formulario */}
-      <section className="space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-zinc-200">
-        <header className="border-b border-zinc-100 pb-4">
-          <h2 className="text-xl font-bold text-zinc-900">Configuración del Perfil</h2>
-          <p className="text-sm text-zinc-500">Personaliza la apariencia y contenido de tu Biolink</p>
-        </header>
-
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 gap-4">
-            <div className="space-y-2">
-              <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Alias Personalizado</label>
-              <div className="flex items-center">
-                <span className="bg-zinc-100 border border-r-0 border-zinc-300 px-3 py-2 rounded-l-lg text-zinc-500 text-sm">navaja.gt/</span>
-                <input
-                  type="text"
-                  value={aliasPersonalizado}
-                  onChange={(e) => setAliasPersonalizado(e.target.value)}
-                  className={`flex-1 px-4 py-2 border ${aliasError ? 'border-red-500' : 'border-zinc-300'} rounded-r-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all`}
-                  placeholder="mi-marca"
-                />
-              </div>
+      {/* Columna Izquierda: Formulario o Éxito */}
+      <section className="space-y-8">
+        {view === 'success' && publishedUrl ? (
+          <div className="bg-emerald-50/80 p-10 rounded-[2.5rem] shadow-sm border border-emerald-100 flex flex-col items-center justify-center text-center space-y-6 h-full min-h-[400px]">
+            <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-4">
+              <CheckCircle className="w-10 h-10 text-emerald-600" />
             </div>
+            <h2 className="text-3xl font-black text-emerald-900 tracking-tight">¡Tu Biolink está en vivo!</h2>
+            <p className="text-emerald-700 font-medium">Copia tu enlace y compártelo con el mundo.</p>
+            
+            <div className="w-full max-w-md bg-white p-2 rounded-2xl flex flex-col sm:flex-row items-stretch sm:items-center shadow-sm border border-emerald-100 gap-2 sm:gap-0">
+              <input
+                type="text"
+                readOnly
+                value={`navaja.gt/bio/${publishedUrl}`}
+                className="flex-1 bg-transparent border-none outline-none text-sm font-bold text-slate-900 px-4 py-2 cursor-text"
+                onClick={(e) => (e.target as HTMLInputElement).select()}
+              />
+              <button
+                onClick={copyToClipboard}
+                className="flex items-center justify-center gap-2 px-6 py-3 sm:rounded-l-none bg-emerald-600 text-white rounded-xl sm:rounded-r-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20 active:scale-95 font-bold text-sm min-w-[120px]"
+              >
+                {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {isCopied ? 'Copiado' : 'Copiar'}
+              </button>
+            </div>
+            
+            <div className="flex items-center gap-4 mt-6">
+              <a
+                href={`/bio/${publishedUrl}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-sm font-bold bg-white text-emerald-700 border border-emerald-200 px-5 py-2.5 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Ver en vivo
+              </a>
+              <button
+                onClick={() => {
+                  setPublishedUrl(null);
+                  setView('editing');
+                }}
+                className="text-sm font-bold text-emerald-600 hover:text-emerald-800 underline underline-offset-4"
+              >
+                Editar de nuevo
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-zinc-200">
+            <header className="border-b border-zinc-100 pb-4">
+              <h2 className="text-xl font-bold text-zinc-900">Configuración del Perfil</h2>
+              <p className="text-sm text-zinc-500">Personaliza la apariencia y contenido de tu Biolink</p>
+            </header>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Alias Personalizado</label>
+                  <div className="flex items-center">
+                    <span className="bg-zinc-100 border border-r-0 border-zinc-300 px-3 py-2 rounded-l-lg text-zinc-500 text-sm">navaja.gt/</span>
+                    <input
+                      type="text"
+                      value={aliasPersonalizado}
+                      onChange={(e) => setAliasPersonalizado(e.target.value)}
+                      className={`flex-1 px-4 py-2 border ${aliasError ? 'border-red-500' : 'border-zinc-300'} rounded-r-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all`}
+                      placeholder="mi-marca"
+                    />
+                  </div>
+                  {aliasError && <p className="text-xs text-red-500 font-semibold mt-1">Este alias ya está en uso. Intenta con otro.</p>}
+                </div>
             <div className="space-y-2">
               <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">Título</label>
               <input
@@ -234,56 +283,32 @@ const BiolinkBuilder: React.FC = () => {
           </div>
         </div>
 
-        {status && (
-          <div className={`p-6 rounded-2xl flex flex-col space-y-4 animate-in fade-in slide-in-from-top-2 shadow-sm ${
-            status.type === 'success' ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'
-          }`}>
-            <div className="flex items-center space-x-3">
-              {status.type === 'success' ? <CheckCircle className="w-6 h-6 text-emerald-600" /> : <AlertCircle className="w-6 h-6" />}
-              <span className={`text-base font-bold ${status.type === 'success' ? 'text-emerald-900' : ''}`}>{status.message}</span>
-            </div>
-            {status.type === 'success' && aliasPersonalizado && (
-              <div className="flex items-center gap-3 pt-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={`navaja.gt/bio/${aliasPersonalizado}`}
-                  className="flex-1 bg-white border border-emerald-100 outline-none text-sm font-bold text-slate-900 px-4 py-3 rounded-xl shadow-sm cursor-text"
-                  onClick={(e) => (e.target as HTMLInputElement).select()}
-                />
-                <button
-                  onClick={copyToClipboard}
-                  className="p-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20 active:scale-90 transition-transform"
-                >
-                  {copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
-                </button>
+            {globalError && (
+              <div className="p-4 rounded-xl flex items-center space-x-3 animate-in fade-in slide-in-from-top-2 bg-red-50 text-red-700 border border-red-200 shadow-sm">
+                <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                <span className="text-sm font-bold">{globalError}</span>
               </div>
             )}
+
+            <button
+              onClick={handleSave}
+              disabled={view === 'saving'}
+              className="w-full flex items-center justify-center space-x-2 py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-indigo-200"
+            >
+              {view === 'saving' ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>Guardando...</span>
+                </>
+              ) : (
+                <>
+                  <Save className="w-5 h-5" />
+                  <span>Guardar Biolink</span>
+                </>
+              )}
+            </button>
           </div>
         )}
-
-        <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="w-full flex items-center justify-center space-x-2 py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-indigo-200"
-        >
-          {isSaving ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              <span>Guardando...</span>
-            </>
-          ) : (
-            <>
-              <Save className="w-5 h-5" />
-              <span>Guardar Biolink</span>
-            </>
-          )}
-        </button>
-        <ProUpgradeModal 
-          isOpen={isModalOpen} 
-          onClose={() => setIsModalOpen(false)} 
-          message={modalMessage} 
-        />
       </section>
 
       {/* Columna Derecha: Preview */}
@@ -344,6 +369,12 @@ const BiolinkBuilder: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <ProUpgradeModal 
+        isOpen={view === 'upgrade'} 
+        onClose={() => setView('editing')} 
+        message={modalMessage} 
+      />
     </div>
   );
 };

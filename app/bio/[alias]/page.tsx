@@ -10,7 +10,7 @@ interface Props {
 
 async function getBiolinkData(alias: string) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/bio/${alias}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/enlaces/bio/${alias}`, {
       cache: 'no-store',
     });
 
