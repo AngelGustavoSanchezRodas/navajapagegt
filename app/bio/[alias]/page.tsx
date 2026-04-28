@@ -10,7 +10,7 @@ interface Props {
 
 async function getBiolinkData(alias: string): Promise<EnlaceResponse | null> {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/public/enlaces/${alias}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/public/links/bio/${alias}`, {
       cache: 'no-store',
     });
 
@@ -19,6 +19,17 @@ async function getBiolinkData(alias: string): Promise<EnlaceResponse | null> {
     const data: EnlaceResponse = await res.json();
 
     if (data.tipo !== 'BIOLINK') return null;
+
+    if (data.urlOriginal) {
+      try {
+        data.metadata = JSON.parse(data.urlOriginal);
+      } catch (e) {
+        console.error("Error parsing metadata from urlOriginal", e);
+        return null;
+      }
+    }
+
+    if (!data.metadata) return null;
 
     return data;
   } catch {

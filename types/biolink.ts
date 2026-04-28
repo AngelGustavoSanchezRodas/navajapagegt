@@ -33,6 +33,7 @@ export interface EnlaceResponse {
   id: string;
   alias: string;
   tipo: 'BIOLINK' | 'SHORT';
+  urlOriginal?: string;
   metadata: MetadataBiolink;
   activo: boolean;
   clicks: number;

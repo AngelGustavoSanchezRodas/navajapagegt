@@ -50,7 +50,7 @@ const BiolinkBuilder: React.FC = () => {
         body: JSON.stringify({
           alias: aliasPersonalizado || null,
           tipo: 'BIOLINK',
-          metadata: metadata
+          urlOriginal: JSON.stringify(metadata)
         })
       });
       setStatus({ type: 'success', message: '¡Biolink guardado con éxito!' });
@@ -187,7 +187,19 @@ const BiolinkBuilder: React.FC = () => {
             status.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-red-50 text-red-700 border border-red-100'
           }`}>
             {status.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
-            <span className="text-sm font-medium">{status.message}</span>
+            <div className="flex-1">
+              <span className="text-sm font-medium">{status.message}</span>
+              {status.type === 'success' && aliasPersonalizado && (
+                <a 
+                  href={`/bio/${aliasPersonalizado}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block mt-2 text-xs font-bold underline hover:text-emerald-800"
+                >
+                  Ver mi Biolink
+                </a>
+              )}
+            </div>
           </div>
         )}
 
