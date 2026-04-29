@@ -9,12 +9,14 @@ import { siteConfig } from "@/shared/config/site";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "@/shared/contexts/AuthContext";
 import { BrandLogo } from "./BrandLogo";
+import { ProUpgradeModal } from "@/shared/components/ui/ProUpgradeModal";
 
 export function PublicNavbar() {
   const pathname = usePathname();
   const { isAuthenticated, logout } = useAuth();
   const [isMounted, setIsMounted] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isProModalOpen, setIsProModalOpen] = useState(false);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setIsMounted(true));
@@ -46,13 +48,13 @@ export function PublicNavbar() {
         <BrandLogo />
 
         <div className="flex items-center gap-2 sm:gap-4">
-          <Link
-            href="/#pricing"
+          <button
+            onClick={() => setIsProModalOpen(true)}
             className="hidden md:flex items-center gap-2 rounded-full bg-gradient-to-r from-amber-200 to-yellow-400 px-4 py-2 text-xs font-black uppercase tracking-wider text-amber-900 transition-all hover:shadow-lg hover:shadow-yellow-500/20 active:scale-95 border border-yellow-300"
           >
             <Sparkles size={14} className="animate-pulse" />
             Upgrade PRO
-          </Link>
+          </button>
           <AnimatePresence mode="wait">
             {isMounted && isAuthenticated ? (
               <motion.div 
@@ -150,6 +152,12 @@ export function PublicNavbar() {
           </AnimatePresence>
         </div>
       </div>
+      
+      <ProUpgradeModal 
+        isOpen={isProModalOpen} 
+        onClose={() => setIsProModalOpen(false)} 
+        message="Actualiza a PRO para desbloquear todo el potencial de NavajaGT."
+      />
     </header>
   );
 }

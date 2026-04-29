@@ -9,6 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 import { ImageConverterTool } from "@/features/tools/components/ImageConverterTool";
+import { ContactQrTool } from '@/features/tools/components/ContactQrTool';
 
 export default function ToolPage() {
   const params = useParams();
@@ -27,6 +28,8 @@ export default function ToolPage() {
         return <BiolinkBuilder />;
       case "convertidor":
         return <ImageConverterTool />;
+      case "qr":
+        return <ContactQrTool />;
       default:
         return (
           <div className="text-center py-20">
@@ -44,6 +47,7 @@ export default function ToolPage() {
       case "acortador": return "Acortador de Enlaces";
       case "biolink": return "Biolink Builder";
       case "convertidor": return "Convertidor de Imágenes";
+      case "qr": return "Generador QR Pro";
       default: return "Herramienta";
     }
   };
