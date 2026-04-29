@@ -1,0 +1,10 @@
+<svg viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- N principal -->
+  <path d="M 5 5 L 15 5 L 90 105 L 90 115 L 52.5 115 L 15 65 L 5 65 Z" fill="#00BFAE"/>
+  <!-- T secundaria -->
+  <path d="M 65 45 L 125 45 L 125 65 L 115 65 L 115 115 L 95 115 L 95 65 L 65 65 Z" fill="#00BFAE"/>
+  <!-- Paralelogramo superior (Magenta) -->
+  <path d="M 65 15 L 115 15 L 130 35 L 80 35 Z" fill="#E91E63"/>
+  <!-- Paralelogramo inferior (Mostaza) -->
+  <path d="M 30 105 L 40 105 L 47.5 115 L 37.5 115 Z" fill="#FFC107"/>
+</svg>

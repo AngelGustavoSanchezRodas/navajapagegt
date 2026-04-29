@@ -46,7 +46,7 @@ export default function RootLayout({
           <PublicNavbar />
           <main className="flex-1">{children}</main>
         </AuthProvider>
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );

@@ -19,11 +19,13 @@ import { EnlaceResponse } from '@/types/biolink';
 import { EmptyState } from '@/shared/components/ui/EmptyState';
 import { GlassCard } from '@/shared/components/ui/GlassCard';
 import { cn } from '@/shared/lib/utils';
+import { useCopyToClipboard } from '@/shared/hooks/useCopyToClipboard';
 
 export function LinkList() {
   const [links, setLinks] = useState<EnlaceResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const { copy, copied } = useCopyToClipboard();
+  const [activeId, setActiveId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -42,20 +44,19 @@ export function LinkList() {
     fetchLinks();
   }, []);
 
-  const copyToClipboard = (alias: string, id: string) => {
+  const handleCopy = (alias: string, id: string) => {
     const appUrl = window.location.origin;
     const url = `${appUrl}/${alias}`;
-    navigator.clipboard.writeText(url);
-    setCopiedId(id);
-    toast.success("¡Enlace copiado!");
-    setTimeout(() => setCopiedId(null), 2000);
+    setActiveId(id);
+    copy(url);
+    setTimeout(() => setActiveId(null), 2000);
   };
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-pulse">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-48 bg-slate-100 rounded-[2.5rem]" />
+          <GlassCard key={i} className="h-56 animate-pulse bg-gray-200/20 border-slate-200/50 rounded-[2.5rem]" />
         ))}
       </div>
     );
@@ -89,10 +90,10 @@ export function LinkList() {
             </div>
             <div className="flex items-center gap-1">
               <button 
-                onClick={() => copyToClipboard(link.alias, link.id)}
+                onClick={() => handleCopy(link.alias, link.id)}
                 className="p-2 text-slate-400 hover:text-brand-turquoise transition-colors rounded-lg hover:bg-slate-50"
               >
-                {copiedId === link.id ? <Check size={16} /> : <Copy size={16} />}
+                {activeId === link.id && copied ? <Check size={16} /> : <Copy size={16} />}
               </button>
               <button className="p-2 text-slate-400 hover:text-slate-900 transition-colors rounded-lg hover:bg-slate-50">
                 <MoreVertical size={16} />
@@ -101,10 +102,10 @@ export function LinkList() {
           </div>
 
           <div className="space-y-1">
-            <h4 className="font-black text-slate-900 text-lg tracking-tight truncate pr-4">
+            <h4 className="font-black text-slate-900 text-lg tracking-tight truncate pr-4 max-w-full">
               {link.tipo === 'BIOLINK' ? `/${link.alias}` : link.alias}
             </h4>
-            <p className="text-xs font-medium text-slate-400 truncate break-all">
+            <p className="text-xs font-medium text-slate-400 truncate max-w-[200px] sm:max-w-xs">
               {link.urlOriginal || 'Perfil Biolink'}
             </p>
           </div>

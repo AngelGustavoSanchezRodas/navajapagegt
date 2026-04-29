@@ -5,10 +5,11 @@ import { MetadataBiolink, EnlaceItem, BiolinkFlatData } from '@/types/biolink';
 import { DEFAULT_BIOLINK_TEMPLATE } from '@/shared/constants/biolink-templates';
 import { apiFetch } from '@/shared/lib/api';
 import Image from 'next/image';
-import { Save, Loader2, CheckCircle, AlertCircle, Copy, Check, ExternalLink, Eye, Smartphone } from 'lucide-react';
+import { Save, Loader2, CheckCircle, AlertCircle, Copy, Check, ExternalLink, Eye, Smartphone, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/shared/contexts/AuthContext';
 import { ProUpgradeModal } from '@/shared/components/ui/ProUpgradeModal';
+import { useCopyToClipboard } from '@/shared/hooks/useCopyToClipboard';
 
 function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
@@ -26,10 +27,10 @@ const BiolinkBuilder: React.FC = () => {
   const [aliasPersonalizado, setAliasPersonalizado] = useState('');
   const [view, setView] = useState<'editing' | 'saving' | 'success' | 'upgrade'>('editing');
   const [publishedUrl, setPublishedUrl] = useState<string | null>(null);
-  const [isCopied, setIsCopied] = useState(false);
-  const [modalMessage, setModalMessage] = useState<string | undefined>();
   const [aliasError, setAliasError] = useState(false);
   const [globalError, setGlobalError] = useState<string | null>(null);
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
+  const { copy, copied } = useCopyToClipboard();
   
   const { plan } = useAuth();
   
@@ -108,20 +109,17 @@ const BiolinkBuilder: React.FC = () => {
     }
   };
 
-  const copyToClipboard = () => {
+  const handleCopy = () => {
     if (publishedUrl) {
       const url = `${window.location.origin}/bio/${publishedUrl}`;
-      navigator.clipboard.writeText(url);
-      setIsCopied(true);
-      toast.success("Enlace copiado");
-      setTimeout(() => setIsCopied(false), 2000);
+      copy(url);
     }
   };
 
   const isDarkPreview = debouncedMetadata.tema === 'DARK';
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6 max-w-7xl mx-auto min-h-screen bg-zinc-50/50">
+    <div className="flex flex-col-reverse lg:flex-row gap-8 p-4 sm:p-6 max-w-7xl mx-auto min-h-screen bg-zinc-50/50">
       {/* Columna Izquierda: Formulario o Éxito */}
       <section className="space-y-8">
         {view === 'success' && publishedUrl ? (
@@ -137,15 +135,15 @@ const BiolinkBuilder: React.FC = () => {
                 type="text"
                 readOnly
                 value={`navaja.gt/bio/${publishedUrl}`}
-                className="flex-1 bg-transparent border-none outline-none text-sm font-bold text-slate-900 px-4 py-2 cursor-text"
+                className="flex-1 bg-transparent border-none outline-none text-sm font-black text-slate-900 px-4 py-2 cursor-text"
                 onClick={(e) => (e.target as HTMLInputElement).select()}
               />
               <button
-                onClick={copyToClipboard}
+                onClick={handleCopy}
                 className="flex items-center justify-center gap-2 px-6 py-3 sm:rounded-l-none bg-emerald-600 text-white rounded-xl sm:rounded-r-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20 active:scale-95 font-bold text-sm min-w-[120px]"
               >
-                {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                {isCopied ? 'Copiado' : 'Copiar'}
+                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copied ? 'Copiado' : 'Copiar Enlace'}
               </button>
             </div>
             
@@ -299,7 +297,7 @@ const BiolinkBuilder: React.FC = () => {
             <button
               onClick={handleSave}
               disabled={view === 'saving'}
-              className="w-full flex items-center justify-center space-x-2 py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-indigo-200"
+              className="w-full flex items-center justify-center space-x-2 py-4 bg-brand-turquoise text-white rounded-xl font-bold hover:opacity-90 transition-all transform active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-brand-turquoise/20"
             >
               {view === 'saving' ? (
                 <>
@@ -317,11 +315,21 @@ const BiolinkBuilder: React.FC = () => {
         )}
       </section>
 
-      {/* Columna Derecha: Preview - Hidden on mobile by default, shown in a sticky container on large screens */}
-      <section className="hidden lg:flex items-start justify-center pt-10">
-        <div className="sticky top-10">
-          <div className="text-center mb-6">
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-widest">
+      {/* Columna Derecha: Preview */}
+      <section className={cn(
+        "lg:flex flex-col items-center justify-start pt-10",
+        showMobilePreview ? "flex fixed inset-0 z-50 bg-white lg:relative lg:bg-transparent lg:z-auto" : "hidden"
+      )}>
+        <button 
+          onClick={() => setShowMobilePreview(false)}
+          className="lg:hidden absolute top-4 right-4 p-2 bg-slate-100 rounded-full text-slate-600 shadow-lg active:scale-95 transition-transform"
+        >
+          <X size={24} />
+        </button>
+        
+        <div className="sticky top-10 flex flex-col items-center">
+          <div className="text-center mb-6 hidden lg:block">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-brand-turquoise/10 text-brand-turquoise text-xs font-bold uppercase tracking-widest">
               Live Preview
             </span>
           </div>
@@ -375,6 +383,15 @@ const BiolinkBuilder: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Floating Action Button for Mobile Preview */}
+      <button
+        onClick={() => setShowMobilePreview(true)}
+        className="lg:hidden fixed bottom-6 right-6 flex items-center gap-2 bg-brand-turquoise text-white px-6 py-3 rounded-full font-black shadow-2xl shadow-brand-turquoise/40 z-40 animate-bounce"
+      >
+        <Smartphone size={20} />
+        Ver Preview
+      </button>
 
       <ProUpgradeModal 
         isOpen={view === 'upgrade'} 

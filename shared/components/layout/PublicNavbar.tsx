@@ -8,6 +8,7 @@ import { User, LayoutDashboard, Settings, LogOut, ChevronDown, Sparkles } from "
 import { siteConfig } from "@/shared/config/site";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "@/shared/contexts/AuthContext";
+import { BrandLogo } from "./BrandLogo";
 
 export function PublicNavbar() {
   const pathname = usePathname();
@@ -42,9 +43,7 @@ export function PublicNavbar() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200/40 bg-white/80 backdrop-blur-md transition-all duration-300">
       <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2 font-black text-xl tracking-tight text-slate-900 hover:opacity-80 transition-opacity">
-          NavajaGT
-        </Link>
+        <BrandLogo />
 
         <div className="flex items-center gap-2 sm:gap-4">
           <AnimatePresence mode="wait">

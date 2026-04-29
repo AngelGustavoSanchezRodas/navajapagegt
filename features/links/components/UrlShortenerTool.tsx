@@ -8,6 +8,7 @@ import { GlassCard } from "@/shared/components/ui/GlassCard";
 import { apiFetch } from "@/shared/lib/api";
 import { useAuth } from "@/shared/contexts/AuthContext";
 import { ProUpgradeModal } from "@/shared/components/ui/ProUpgradeModal";
+import { useCopyToClipboard } from "@/shared/hooks/useCopyToClipboard";
 
 interface ShortenResponse {
   alias: string;
@@ -21,9 +22,9 @@ export function UrlShortenerTool() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successAlias, setSuccessAlias] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { copy, copied } = useCopyToClipboard();
   const [modalMessage, setModalMessage] = useState<string | undefined>();
   const resultInputRef = useRef<HTMLInputElement>(null);
   
@@ -80,12 +81,9 @@ export function UrlShortenerTool() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || (typeof window !== 'undefined' ? window.location.origin : '');
   const shortUrl = successAlias ? `${appUrl}/${successAlias}` : '';
 
-  const copyToClipboard = () => {
+  const handleCopy = () => {
     if (shortUrl) {
-      navigator.clipboard.writeText(shortUrl);
-      setCopied(true);
-      toast.success("¡Copiado al portapapeles!");
-      setTimeout(() => setCopied(false), 2000);
+      copy(shortUrl);
     }
   };
 
@@ -214,7 +212,7 @@ export function UrlShortenerTool() {
                 className="flex-1 bg-white border border-emerald-100 outline-none text-sm font-black text-slate-900 px-5 py-4 rounded-xl shadow-sm cursor-pointer"
               />
               <button
-                onClick={copyToClipboard}
+                onClick={handleCopy}
                 className="p-4 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20 active:scale-90 transition-transform"
               >
                 {copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
