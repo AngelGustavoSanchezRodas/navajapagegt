@@ -127,7 +127,7 @@ export default function DashboardPage() {
       default:
         return (
           <div className="flex flex-col gap-10 animate-in fade-in duration-700">
-            <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 md:gap-8">
               <div className="space-y-2">
                 <div className="flex items-center gap-2.5 text-brand-turquoise font-black text-[10px] uppercase tracking-[0.25em]">
                   <Sparkles size={14} className="animate-pulse" />
@@ -166,14 +166,14 @@ export default function DashboardPage() {
               </div>
             </header>
 
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
               {filteredTools.map((tool) => (
                 <button
                   key={tool.id}
                   onClick={() => setActiveTab(tool.id)}
                   className="group text-left w-full transition-all duration-500 hover:-translate-y-1"
                 >
-                  <GlassCard className="p-5 md:p-8 h-full flex flex-col items-start gap-6 cursor-pointer rounded-[2.5rem] border-2 border-transparent transition-all group-hover:border-brand-turquoise/20 group-hover:shadow-[0_40px_80px_-16px_rgba(0,0,0,0.1)]">
+                  <GlassCard className="h-full flex flex-col items-start gap-6 cursor-pointer rounded-[2.5rem] border-2 border-transparent transition-all group-hover:border-brand-turquoise/20 group-hover:shadow-[0_40px_80px_-16px_rgba(0,0,0,0.1)]">
                     <div className={cn("p-5 rounded-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3", tool.color)}>
                       <tool.icon className="w-8 h-8" />
                     </div>
