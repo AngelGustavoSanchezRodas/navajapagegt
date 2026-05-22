@@ -65,7 +65,7 @@ export function DashboardSidebar() {
                   >
                     <div className="flex items-center gap-3">
                       <item.icon size={18} className={cn("transition-transform group-hover:scale-110", isActive ? "text-brand-turquoise" : "text-slate-400")} />
-                      <span className="text-sm">{item.label}</span>
+                      <span className="hidden md:block text-sm">{item.label}</span>
                     </div>
                     {isActive && <ChevronRight size={14} className="animate-in slide-in-from-left-1" />}
                   </Link>
@@ -81,8 +81,8 @@ export function DashboardSidebar() {
           onClick={() => setIsProModalOpen(true)}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-200 to-yellow-400 px-4 py-3 text-sm font-black uppercase tracking-wider text-amber-900 transition-all hover:shadow-lg hover:shadow-yellow-500/20 active:scale-95 border border-yellow-300"
         >
-          <Sparkles size={16} className="animate-pulse" />
-          Upgrade PRO
+          <Sparkles size={16} className="animate-pulse shrink-0" />
+          <span className="hidden md:block">Upgrade PRO</span>
         </button>
       </div>
 

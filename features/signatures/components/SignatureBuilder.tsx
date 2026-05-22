@@ -150,7 +150,7 @@ export function SignatureBuilder() {
             className="text-xs font-semibold text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1.5 bg-slate-100/50 hover:bg-red-50 px-3 py-1.5 rounded-lg border border-slate-200/60 shadow-sm"
           >
             <Trash2 size={13} />
-            Limpiar Borrador
+            <span className="hidden sm:inline-block">Limpiar Borrador</span>
           </button>
         </div>
         <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
@@ -362,7 +362,7 @@ export function SignatureBuilder() {
             className="group flex-1 py-4 bg-slate-900 text-white rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:bg-black transition-all shadow-xl shadow-slate-900/10 active:scale-[0.98]"
           >
             <Copy className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            Copiar
+            <span className="hidden sm:inline-block">Copiar</span>
           </button>
           
           <button 

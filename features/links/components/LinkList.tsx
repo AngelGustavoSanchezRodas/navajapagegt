@@ -290,17 +290,19 @@ export function LinkList() {
                     <div className="flex items-center justify-end gap-2.5">
                       <button
                         onClick={() => copy(`${window.location.origin}/${link.codigoCorto || link.alias}`)}
-                        className="p-1.5 text-slate-400 hover:text-brand-turquoise hover:bg-slate-50 rounded-lg transition-colors"
+                        className="flex items-center gap-2 p-2 md:px-4 md:py-2 text-slate-400 hover:text-brand-turquoise hover:bg-slate-50 rounded-lg transition-colors"
                         title="Copiar enlace"
                       >
                         <Copy size={16} />
+                        <span className="hidden md:inline-block text-xs font-bold">Copiar</span>
                       </button>
                       <button
                         onClick={() => setToDelete(link)}
-                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        className="flex items-center gap-2 p-2 md:px-4 md:py-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                         title="Eliminar enlace"
                       >
                         <Trash2 size={16} />
+                        <span className="hidden md:inline-block text-xs font-bold">Eliminar</span>
                       </button>
                       <ActionsDropdown link={link} onDelete={setToDelete} />
                     </div>

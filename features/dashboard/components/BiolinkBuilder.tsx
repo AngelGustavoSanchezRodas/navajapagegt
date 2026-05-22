@@ -5,7 +5,7 @@ import { MetadataBiolink, EnlaceItem, BiolinkFlatData } from '@/types/biolink';
 import { DEFAULT_BIOLINK_TEMPLATE } from '@/shared/constants/biolink-templates';
 import { apiFetch } from '@/shared/lib/api';
 import Image from 'next/image';
-import { Save, Loader2, CheckCircle, AlertCircle, Copy, Check, ExternalLink, Eye, Smartphone, X } from 'lucide-react';
+import { Save, Loader2, CheckCircle, AlertCircle, Copy, Check, ExternalLink, Eye, Smartphone, X, Plus, Edit } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/shared/contexts/AuthContext';
 import { ProUpgradeModal } from '@/shared/components/ui/ProUpgradeModal';
@@ -146,10 +146,10 @@ const BiolinkBuilder: React.FC = () => {
               />
               <button
                 onClick={handleCopy}
-                className="flex items-center justify-center gap-2 px-6 py-3 sm:rounded-l-none bg-emerald-600 text-white rounded-xl sm:rounded-r-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20 active:scale-95 font-bold text-sm min-w-[120px]"
+                className="flex items-center justify-center gap-2 px-4 sm:px-6 py-3 sm:rounded-l-none bg-emerald-600 text-white rounded-xl sm:rounded-r-xl hover:bg-emerald-700 transition-colors shadow-lg shadow-emerald-600/20 active:scale-95 font-bold text-sm sm:min-w-[120px]"
               >
                 {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                {copied ? 'Copiado' : 'Copiar Enlace'}
+                {copied ? <span className="hidden sm:inline-block">Copiado</span> : <span className="hidden sm:inline-block">Copiar Enlace</span>}
               </button>
             </div>
             
@@ -161,16 +161,17 @@ const BiolinkBuilder: React.FC = () => {
                 className="flex items-center gap-2 text-sm font-bold bg-white text-emerald-700 border border-emerald-200 px-5 py-2.5 rounded-xl hover:bg-emerald-50 transition-colors shadow-sm"
               >
                 <ExternalLink className="w-4 h-4" />
-                Ver en vivo
+                <span className="hidden sm:inline-block">Ver en vivo</span>
               </a>
               <button
                 onClick={() => {
                   setPublishedUrl(null);
                   setView('editing');
                 }}
-                className="text-sm font-bold text-emerald-600 hover:text-emerald-800 underline underline-offset-4"
+                className="flex items-center gap-1.5 text-sm font-bold text-emerald-600 hover:text-emerald-800 hover:underline underline-offset-4"
               >
-                Editar de nuevo
+                <Edit className="w-4 h-4" />
+                <span className="hidden sm:inline-block">Editar de nuevo</span>
               </button>
             </div>
           </div>
@@ -255,9 +256,10 @@ const BiolinkBuilder: React.FC = () => {
             <h3 className="font-bold text-zinc-900">Enlaces</h3>
             <button
               onClick={addLink}
-              className="px-4 py-2 bg-zinc-100 text-zinc-700 rounded-lg text-sm font-semibold hover:bg-zinc-200 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-zinc-100 text-zinc-700 rounded-lg text-sm font-semibold hover:bg-zinc-200 transition-colors"
             >
-              + Agregar Enlace
+              <Plus size={16} />
+              <span className="hidden sm:inline-block">Agregar Enlace</span>
             </button>
           </div>
 
