@@ -244,7 +244,7 @@ export function SignatureBuilder() {
                   className="overflow-hidden bg-slate-50/50"
                 >
                   <div className="p-5 space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Teléfono</label>
                         <input 
@@ -320,7 +320,7 @@ export function SignatureBuilder() {
       <div className="w-full lg:w-1/2 lg:sticky lg:top-24 space-y-6">
         
         {/* Templates Carousel */}
-        <div className="bg-white p-5 rounded-[2rem] border border-slate-200 shadow-sm">
+        <div className="bg-white p-4 md:p-5 rounded-[2rem] border border-slate-200 shadow-sm">
           <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Plantillas</h3>
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {TEMPLATES.map(t => (
@@ -346,7 +346,7 @@ export function SignatureBuilder() {
         </div>
 
         {/* Live Preview */}
-        <GlassCard className="p-8 border-slate-200 flex items-center justify-center min-h-[300px] overflow-x-auto">
+        <GlassCard className="p-4 md:p-8 border-slate-200 flex items-center justify-center min-h-[300px] overflow-x-auto w-full max-w-full">
           {/* Aquí inyectamos el HTML Engine */}
           <SignaturePreview 
             ref={previewRef}

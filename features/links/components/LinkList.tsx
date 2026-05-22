@@ -245,14 +245,14 @@ export function LinkList() {
       )}
 
       <GlassCard className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white">
-        <div className="overflow-x-auto">
+        <div className="w-full overflow-x-auto rounded-lg">
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
               <tr>
                 <th className="px-6 py-4">Nombre / Destino</th>
-                <th className="px-6 py-4">Tipo</th>
-                <th className="px-6 py-4">Creación</th>
-                <th className="px-6 py-4">Estadísticas</th>
+                <th className="px-6 py-4 hidden md:table-cell">Tipo</th>
+                <th className="px-6 py-4 hidden md:table-cell">Creación</th>
+                <th className="px-6 py-4 hidden md:table-cell">Estadísticas</th>
                 <th className="px-6 py-4 text-right">Acciones</th>
               </tr>
             </thead>
@@ -262,7 +262,7 @@ export function LinkList() {
                   {/* Nombre / Destino */}
                   <td className="px-6 py-4">
                     <div className="flex flex-col gap-0.5">
-                      <span className="font-black text-slate-900">/{link.alias}</span>
+                      <span className="font-black text-slate-900 truncate block max-w-[120px] md:max-w-none">/{link.alias}</span>
                       {link.urlOriginal && (
                         <span className="text-[11px] font-medium text-slate-400 truncate max-w-[240px]">
                           {link.urlOriginal}
@@ -271,17 +271,17 @@ export function LinkList() {
                     </div>
                   </td>
                   {/* Tipo */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 hidden md:table-cell">
                     <TipoBadge tipo={link.tipo} />
                   </td>
                   {/* Fecha */}
-                  <td className="px-6 py-4 text-slate-500 text-xs font-medium whitespace-nowrap">
+                  <td className="px-6 py-4 text-slate-500 text-xs font-medium whitespace-nowrap hidden md:table-cell">
                     {link.fechaCreacion
                       ? new Date(link.fechaCreacion).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
                       : 'Hoy'}
                   </td>
                   {/* Clics */}
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 hidden md:table-cell">
                     <span className="text-sm font-black text-slate-700">{link.clicks ?? 0}</span>
                     <span className="text-[10px] text-slate-400 ml-1">clics</span>
                   </td>

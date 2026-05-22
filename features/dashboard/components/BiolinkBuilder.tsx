@@ -125,11 +125,11 @@ const BiolinkBuilder: React.FC = () => {
   const isDarkPreview = debouncedMetadata.tema === 'DARK';
 
   return (
-    <div className="flex flex-col-reverse lg:flex-row gap-8 p-4 sm:p-6 max-w-7xl mx-auto min-h-screen bg-zinc-50/50">
+    <div className="flex flex-col-reverse lg:flex-row gap-4 md:gap-8 p-4 md:p-6 max-w-7xl mx-auto min-h-screen bg-zinc-50/50">
       {/* Columna Izquierda: Formulario o Éxito */}
       <section className="space-y-8">
         {view === 'success' && publishedUrl ? (
-          <div className="bg-emerald-50/80 p-10 rounded-[2.5rem] shadow-sm border border-emerald-100 flex flex-col items-center justify-center text-center space-y-6 h-full min-h-[400px]">
+          <div className="bg-emerald-50/80 p-4 md:p-10 rounded-[2.5rem] shadow-sm border border-emerald-100 flex flex-col items-center justify-center text-center space-y-6 h-full min-h-[400px]">
             <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-4">
               <CheckCircle className="w-10 h-10 text-emerald-600" />
             </div>
@@ -175,7 +175,7 @@ const BiolinkBuilder: React.FC = () => {
             </div>
           </div>
         ) : (
-          <div className="space-y-8 bg-white p-8 rounded-2xl shadow-sm border border-zinc-200">
+          <div className="space-y-6 md:space-y-8 bg-white p-4 md:p-8 rounded-2xl shadow-sm border border-zinc-200">
             <header className="border-b border-zinc-100 pb-4">
               <h2 className="text-xl font-bold text-zinc-900">Configuración del Perfil</h2>
               <p className="text-sm text-zinc-500">Personaliza la apariencia y contenido de tu Biolink</p>
@@ -323,7 +323,7 @@ const BiolinkBuilder: React.FC = () => {
 
       {/* Columna Derecha: Preview */}
       <section className={cn(
-        "lg:flex flex-col items-center justify-start pt-10",
+        "lg:flex flex-col items-center justify-start pt-10 overflow-y-auto pb-10",
         showMobilePreview ? "flex fixed inset-0 z-50 bg-white lg:relative lg:bg-transparent lg:z-auto" : "hidden"
       )}>
         <button 
@@ -340,7 +340,7 @@ const BiolinkBuilder: React.FC = () => {
             </span>
           </div>
           
-          <div className="w-[320px] h-[640px] rounded-[3rem] border-8 border-slate-900 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)] bg-white relative">
+          <div className="w-full max-w-[320px] h-[85vh] max-h-[640px] rounded-[3rem] border-8 border-slate-900 overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.2)] bg-white relative">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-2xl z-20"></div>
             
             <div className={`h-full overflow-y-auto pt-12 pb-8 px-6 transition-colors duration-300 ${

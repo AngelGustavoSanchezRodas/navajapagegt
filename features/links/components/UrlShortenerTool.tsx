@@ -91,7 +91,7 @@ export function UrlShortenerTool() {
   if (shortUrl) {
     return (
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 w-full max-w-xl mx-auto">
-        <GlassCard className="p-10 border-2 border-brand-turquoise/20 bg-gradient-to-b from-white to-brand-turquoise/5 rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl shadow-brand-turquoise/10 relative overflow-hidden">
+        <GlassCard className="p-4 md:p-10 border-2 border-brand-turquoise/20 bg-gradient-to-b from-white to-brand-turquoise/5 rounded-[2.5rem] flex flex-col items-center text-center shadow-2xl shadow-brand-turquoise/10 relative overflow-hidden">
           {/* Background elements */}
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 rounded-full bg-brand-turquoise/10 blur-2xl"></div>
           <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-32 h-32 rounded-full bg-emerald-400/10 blur-2xl"></div>
@@ -154,7 +154,7 @@ export function UrlShortenerTool() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-xl rounded-[2.5rem] bg-white border border-slate-200 p-6 sm:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)]">
+    <div className="mx-auto w-full max-w-xl rounded-[2.5rem] bg-white border border-slate-200 p-4 md:p-10 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)]">
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-2xl font-[950] text-slate-900 tracking-tight">Acortador Rápido</h3>
         {shortUrl && (

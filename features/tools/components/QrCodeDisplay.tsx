@@ -51,7 +51,7 @@ const QrCodeDisplay: React.FC<Props> = ({ text: initialText }) => {
       )}
 
       {text && (
-        <GlassCard className="flex flex-col items-center justify-center space-y-6 p-8 bg-white/40 backdrop-blur-xl border border-white/20 animate-in fade-in zoom-in-95">
+        <GlassCard className="flex flex-col items-center justify-center space-y-6 p-4 md:p-8 bg-white/40 backdrop-blur-xl border border-white/20 animate-in fade-in zoom-in-95">
           <div className="group relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl bg-white p-2">
             <Image
               src={qrUrl}

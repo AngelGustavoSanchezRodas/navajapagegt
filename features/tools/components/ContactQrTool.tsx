@@ -185,7 +185,7 @@ export const ContactQrTool: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-700">
-      <GlassCard className="p-5 sm:p-8 lg:p-10 max-w-2xl mx-auto rounded-[2.5rem] border-white/60 shadow-xl overflow-hidden relative">
+      <GlassCard className="p-4 md:p-8 lg:p-10 max-w-2xl mx-auto rounded-[2.5rem] border-white/60 shadow-xl overflow-hidden relative">
         <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand-turquoise/5 blur-3xl" />
         
         <div className="relative z-10 flex items-center gap-4 mb-8">
@@ -470,8 +470,8 @@ export const ContactQrTool: React.FC = () => {
 
         {qrUrl && (
           <div className="mt-16 flex flex-col items-center animate-in fade-in zoom-in-95 duration-1000">
-            <div className="group relative overflow-hidden rounded-[2rem] border-4 border-white shadow-2xl mb-10 max-h-[60vh]">
-              <img src={qrUrl} alt="QR Code Result" className="w-64 h-64 max-h-[60vh] object-contain" />
+            <div className="group relative overflow-hidden rounded-[2rem] border-4 border-white shadow-2xl mb-10 max-h-[60vh] w-full max-w-[16rem] aspect-square">
+              <img src={qrUrl} alt="QR Code Result" className="w-full h-full object-contain" />
               
               {/* Overlay de Hover */}
               <div className="absolute inset-0 bg-black/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
