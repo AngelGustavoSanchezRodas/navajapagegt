@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import Cookies from "js-cookie";
 
 interface AuthContextType {
@@ -47,6 +47,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setIsAuthenticated(false);
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const handleSessionExpired = () => {
+      logout();
+    };
+
+    window.addEventListener("auth-session-expired", handleSessionExpired);
+    return () => {
+      window.removeEventListener("auth-session-expired", handleSessionExpired);
+    };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, user, plan, login, logout }}>

@@ -35,6 +35,7 @@ export async function apiFetch<T>(endpoint: string, options: ApiOptions = {}): P
     if (response.status === 401) {
       Cookies.remove('token');
       if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('auth-session-expired'));
         window.location.href = '/login?expired=true';
       }
     }

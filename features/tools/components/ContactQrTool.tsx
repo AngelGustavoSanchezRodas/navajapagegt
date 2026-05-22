@@ -325,73 +325,93 @@ export const ContactQrTool: React.FC = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Color Selection */}
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Colores del QR</label>
-                  <div className="flex flex-wrap gap-2">
-                    {PRESET_COLORS.map(color => (
-                      <button
-                        key={color}
-                        type="button"
-                        onClick={() => setForegroundColor(color)}
-                        className={cn(
-                          "w-8 h-8 rounded-full border-2 transition-all",
-                          foregroundColor === color ? "border-brand-turquoise scale-110 shadow-lg" : "border-transparent"
-                        )}
-                        style={{ backgroundColor: color }}
-                      />
-                    ))}
-                    <div className="relative w-8 h-8 rounded-full border-2 border-slate-200 overflow-hidden">
-                      <input 
-                        type="color" 
-                        value={foregroundColor}
-                        onChange={(e) => setForegroundColor(e.target.value)}
-                        className="absolute inset-0 scale-150 cursor-pointer"
-                      />
+            <div className="relative group rounded-3xl overflow-hidden p-1">
+              {plan === 'FREE' && (
+                <div 
+                  onClick={() => setIsProModalOpen(true)}
+                  className="absolute inset-0 bg-slate-900/50 backdrop-blur-[2px] flex items-center justify-center z-10 cursor-pointer rounded-2xl"
+                >
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsProModalOpen(true);
+                    }}
+                    className="bg-brand-turquoise text-slate-900 px-5 py-3 rounded-2xl font-black uppercase tracking-wider text-xs flex items-center gap-2 hover:scale-[1.03] active:scale-[0.97] transition-all shadow-xl shadow-brand-turquoise/20 border-none"
+                  >
+                    <Lock size={14} />
+                    Desbloquear Colores PRO
+                  </button>
+                </div>
+              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Color Selection */}
+                <div className="space-y-6">
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Colores del QR</label>
+                    <div className="flex flex-wrap gap-2">
+                      {PRESET_COLORS.map(color => (
+                        <button
+                          key={color}
+                          type="button"
+                          onClick={() => setForegroundColor(color)}
+                          className={cn(
+                            "w-8 h-8 rounded-full border-2 transition-all",
+                            foregroundColor === color ? "border-brand-turquoise scale-110 shadow-lg" : "border-transparent"
+                          )}
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                      <div className="relative w-8 h-8 rounded-full border-2 border-slate-200 overflow-hidden">
+                        <input 
+                          type="color" 
+                          value={foregroundColor}
+                          onChange={(e) => setForegroundColor(e.target.value)}
+                          className="absolute inset-0 scale-150 cursor-pointer"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Fondo</label>
+                    <div className="flex flex-wrap gap-2">
+                      {['#FFFFFF', '#F8FAFC', '#F1F5F9', '#000000'].map(color => (
+                        <button
+                          key={color}
+                          type="button"
+                          onClick={() => setBackgroundColor(color)}
+                          className={cn(
+                            "w-8 h-8 rounded-full border-2 transition-all",
+                            backgroundColor === color ? "border-brand-turquoise scale-110 shadow-lg" : "border-transparent"
+                          )}
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
 
+                {/* Pattern Selection */}
                 <div className="space-y-3">
-                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Fondo</label>
-                  <div className="flex flex-wrap gap-2">
-                    {['#FFFFFF', '#F8FAFC', '#F1F5F9', '#000000'].map(color => (
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-2">
+                    <Grid3X3 size={14} /> Patrón de Datos
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {['squares', 'dots', 'rounded'].map(p => (
                       <button
-                        key={color}
+                        key={p}
                         type="button"
-                        onClick={() => setBackgroundColor(color)}
+                        onClick={() => setSelectedPattern(p)}
                         className={cn(
-                          "w-8 h-8 rounded-full border-2 transition-all",
-                          backgroundColor === color ? "border-brand-turquoise scale-110 shadow-lg" : "border-transparent"
+                          "h-12 rounded-xl border-2 flex items-center justify-center transition-all",
+                          selectedPattern === p ? "border-brand-turquoise bg-brand-turquoise/5 text-brand-turquoise" : "border-slate-100 text-slate-400 hover:border-slate-200"
                         )}
-                        style={{ backgroundColor: color }}
-                      />
+                      >
+                        <span className="text-[10px] font-bold uppercase tracking-tighter">{p === 'squares' ? 'Cuadros' : p === 'dots' ? 'Puntos' : 'Smooth'}</span>
+                      </button>
                     ))}
                   </div>
-                </div>
-              </div>
-
-              {/* Pattern Selection */}
-              <div className="space-y-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-2">
-                  <Grid3X3 size={14} /> Patrón de Datos
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {['squares', 'dots', 'rounded'].map(p => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => setSelectedPattern(p)}
-                      className={cn(
-                        "h-12 rounded-xl border-2 flex items-center justify-center transition-all",
-                        selectedPattern === p ? "border-brand-turquoise bg-brand-turquoise/5 text-brand-turquoise" : "border-slate-100 text-slate-400 hover:border-slate-200"
-                      )}
-                    >
-                      <span className="text-[10px] font-bold uppercase tracking-tighter">{p === 'squares' ? 'Cuadros' : p === 'dots' ? 'Puntos' : 'Smooth'}</span>
-                    </button>
-                  ))}
                 </div>
               </div>
             </div>

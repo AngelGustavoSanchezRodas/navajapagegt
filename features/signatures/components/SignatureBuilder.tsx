@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Copy, Lock, ChevronDown, Check, Sparkles, User, Building2, Phone, Share2, Save, Loader2 } from "lucide-react";
+import { Copy, Lock, ChevronDown, Check, Sparkles, User, Building2, Phone, Share2, Save, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/shared/contexts/AuthContext";
@@ -10,6 +10,7 @@ import { GlassCard } from "@/shared/components/ui/GlassCard";
 import { cn } from "@/shared/lib/utils";
 import { apiFetch } from "@/shared/lib/api";
 import { SignaturePreview, SignatureData } from "./SignaturePreview";
+import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 
 const TEMPLATES = [
   { id: 'minimal', name: 'Minimalista', isPro: false },
@@ -25,7 +26,7 @@ export function SignatureBuilder() {
   const [templateId, setTemplateId] = useState('minimal');
   const [isSaving, setIsSaving] = useState(false);
   
-  const [data, setData] = useState<SignatureData>({
+  const [data, setData, removeData] = useLocalStorage<SignatureData>('signatureData', {
     nombre: '',
     cargo: '',
     empresa: '',
@@ -50,6 +51,11 @@ export function SignatureBuilder() {
   });
 
   const previewRef = useRef<HTMLDivElement>(null);
+
+  const handleClearDraft = () => {
+    removeData();
+    toast.success("Borrador de firma limpiado correctamente");
+  };
 
   const handleTemplateSelect = (id: string, isPro: boolean) => {
     if (isPro && plan === 'FREE') {
@@ -137,6 +143,16 @@ export function SignatureBuilder() {
       
       {/* LEFT COLUMN: Scrollable Form */}
       <div className="w-full lg:w-1/2 space-y-6">
+        <div className="flex justify-between items-center px-1">
+          <h2 className="text-lg font-bold text-slate-800">Diseño de Firma</h2>
+          <button
+            onClick={handleClearDraft}
+            className="text-xs font-semibold text-slate-400 hover:text-red-500 transition-colors flex items-center gap-1.5 bg-slate-100/50 hover:bg-red-50 px-3 py-1.5 rounded-lg border border-slate-200/60 shadow-sm"
+          >
+            <Trash2 size={13} />
+            Limpiar Borrador
+          </button>
+        </div>
         <div className="bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden">
           
           {/* Datos Personales */}

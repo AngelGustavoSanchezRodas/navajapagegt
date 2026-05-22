@@ -153,6 +153,7 @@ export function LinkList() {
   const [toDelete, setToDelete] = useState<EnlaceResponse | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
+  const { copy } = useCopyToClipboard();
 
   useEffect(() => {
     const fetchLinks = async () => {
@@ -286,7 +287,23 @@ export function LinkList() {
                   </td>
                   {/* Acciones */}
                   <td className="px-6 py-4 text-right">
-                    <ActionsDropdown link={link} onDelete={setToDelete} />
+                    <div className="flex items-center justify-end gap-2.5">
+                      <button
+                        onClick={() => copy(`${window.location.origin}/${link.codigoCorto || link.alias}`)}
+                        className="p-1.5 text-slate-400 hover:text-brand-turquoise hover:bg-slate-50 rounded-lg transition-colors"
+                        title="Copiar enlace"
+                      >
+                        <Copy size={16} />
+                      </button>
+                      <button
+                        onClick={() => setToDelete(link)}
+                        className="p-1.5 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Eliminar enlace"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                      <ActionsDropdown link={link} onDelete={setToDelete} />
+                    </div>
                   </td>
                 </tr>
               ))}
