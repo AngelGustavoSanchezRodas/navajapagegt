@@ -133,10 +133,10 @@ export default function DashboardPage() {
                   <Sparkles size={14} className="animate-pulse" />
                   Centro de Control
                 </div>
-                <h1 className="text-5xl md:text-6xl font-[1000] text-slate-900 tracking-[-0.04em] leading-tight">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-[-0.04em] leading-tight">
                   Bienvenido de nuevo
                 </h1>
-                <p className="text-slate-400 font-bold text-lg capitalize">
+                <p className="text-slate-400 font-bold text-sm sm:text-base capitalize">
                   {currentDate}
                 </p>
               </div>
@@ -156,7 +156,7 @@ export default function DashboardPage() {
                     </div>
                   ))
                 ) : (
-                  <div className="flex flex-col items-start gap-4 p-6 bg-slate-50 rounded-2xl border border-slate-100 w-full max-w-md">
+                  <div className="flex flex-col items-start gap-4 p-5 md:p-8 bg-slate-50 rounded-2xl border border-slate-100 w-full max-w-md">
                     <p className="text-sm font-bold text-slate-600">Tus estadísticas aparecerán aquí cuando crees tu primer enlace.</p>
                     <button onClick={() => setActiveTab('shortener')} className="px-5 py-2.5 bg-brand-turquoise text-white text-sm font-bold rounded-full hover:bg-brand-turquoise/90 transition-colors shadow-sm">
                       Crear Enlace
@@ -166,19 +166,19 @@ export default function DashboardPage() {
               </div>
             </header>
 
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {filteredTools.map((tool) => (
                 <button
                   key={tool.id}
                   onClick={() => setActiveTab(tool.id)}
                   className="group text-left w-full transition-all duration-500 hover:-translate-y-1"
                 >
-                  <GlassCard className="p-8 h-full flex flex-col items-start gap-6 cursor-pointer rounded-[2.5rem] border-2 border-transparent transition-all group-hover:border-brand-turquoise/20 group-hover:shadow-[0_40px_80px_-16px_rgba(0,0,0,0.1)]">
+                  <GlassCard className="p-5 md:p-8 h-full flex flex-col items-start gap-6 cursor-pointer rounded-[2.5rem] border-2 border-transparent transition-all group-hover:border-brand-turquoise/20 group-hover:shadow-[0_40px_80px_-16px_rgba(0,0,0,0.1)]">
                     <div className={cn("p-5 rounded-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3", tool.color)}>
                       <tool.icon className="w-8 h-8" />
                     </div>
                     <div>
-                      <h4 className="font-black text-slate-900 text-2xl mb-3 tracking-tight">{tool.name}</h4>
+                      <h4 className="font-black text-slate-900 text-lg md:text-xl mb-3 tracking-tight truncate w-full">{tool.name}</h4>
                       <p className="text-slate-500 font-medium leading-relaxed">{tool.description}</p>
                     </div>
                     <div className="mt-auto pt-8 flex items-center gap-3 text-[11px] font-black uppercase tracking-[0.2em] text-brand-turquoise opacity-60 group-hover:opacity-100 transition-all transform translate-x-[-10px] group-hover:translate-x-0">

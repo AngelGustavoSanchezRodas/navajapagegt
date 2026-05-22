@@ -43,7 +43,7 @@ export function DashboardTopbar({ activeTab, onTabChange }: DashboardTopbarProps
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/40 bg-white/90 backdrop-blur-md">
       <div className="flex h-16 items-center justify-between px-6 lg:px-8 gap-8">
         {/* Navigation Wrapper */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-0">
           {/* Mega Menú: Todas las Herramientas */}
           <div className="group relative">
             <button
@@ -102,7 +102,7 @@ export function DashboardTopbar({ activeTab, onTabChange }: DashboardTopbarProps
           <div className="mx-2 h-6 w-px bg-slate-200" />
 
           {/* Individual Tabs */}
-          <nav className="flex items-center gap-1">
+          <nav className="flex flex-nowrap overflow-x-auto overflow-y-hidden whitespace-nowrap scrollbar-hide no-scrollbar gap-2 md:gap-4 px-2 min-w-0">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               // Lógica de color dinámico basándose en la herramienta
@@ -116,7 +116,7 @@ export function DashboardTopbar({ activeTab, onTabChange }: DashboardTopbarProps
                   href="/dashboard"
                   onClick={() => onTabChange(tab.id)}
                   className={cn(
-                    "flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 active:scale-95",
+                    "flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 active:scale-95 shrink-0",
                     isActive
                       ? activeClasses
                       : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
