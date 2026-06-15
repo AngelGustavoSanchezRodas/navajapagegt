@@ -180,32 +180,31 @@ function EditModal({ link, onConfirm, onCancel, isUpdating }: {
             <X size={18} />
           </button>
         </div>
-        <h3 className="text-xl font-[1000] text-slate-900 mb-2">Editar Enlace</h3>
+        <h3 className="text-xl font-[1000] text-slate-900 mb-2">Editar Firma</h3>
         
         <div className="mb-6 p-3 bg-red-50 border border-red-100 rounded-xl text-xs font-medium text-red-600">
-          <strong>Advertencia:</strong> Editar la URL de destino o el alias cambiará inmediatamente a dónde apunta este enlace corto. Cualquier código QR impreso que apunte a la URL antigua podría dejar de funcionar si modificas el alias.
+          <strong>Advertencia:</strong> Modificar los datos de la firma cambiará instantáneamente la firma digital generada. Asegúrate de que la URL de la imagen apunte a una imagen pública y segura.
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Alias (Personalizado)</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1">Nombre / Identificador</label>
             <input 
               type="text" 
               value={alias} 
               onChange={e => setAlias(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-turquoise focus:ring-2 focus:ring-brand-turquoise/20 outline-none text-sm font-medium"
-              placeholder="mi-enlace"
+              placeholder="Firma de trabajo"
             />
           </div>
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">URL de Destino</label>
+            <label className="block text-xs font-bold text-slate-700 mb-1">URL de Destino (Enlace del logo)</label>
             <input 
               type="url" 
-              required
               value={urlOriginal} 
               onChange={e => setUrlOriginal(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-turquoise focus:ring-2 focus:ring-brand-turquoise/20 outline-none text-sm font-medium"
-              placeholder="https://..."
+              placeholder="https://tupagina.com..."
             />
           </div>
 
@@ -233,7 +232,7 @@ function EditModal({ link, onConfirm, onCancel, isUpdating }: {
 }
 
 // ── Componente principal ───────────────────────────────────
-export function LinkList() {
+export function SignatureList() {
   const [links, setLinks] = useState<EnlaceResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [toDelete, setToDelete] = useState<EnlaceResponse | null>(null);
@@ -246,7 +245,7 @@ export function LinkList() {
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        const data = await apiFetch<EnlaceResponse[]>('/api/management/links/list');
+        const data = await apiFetch<EnlaceResponse[]>('/api/management/signatures/list');
         setLinks(Array.isArray(data) ? data : []);
       } catch (err: unknown) {
         setLinks([]);
@@ -267,7 +266,7 @@ export function LinkList() {
     try {
       const token = Cookies.get('token');
       // Usamos fetch nativo exactamente como indicó el Backend para evitar el parseo forzado a JSON
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/management/links/${toDelete.id}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/management/signatures/${toDelete.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -303,7 +302,7 @@ export function LinkList() {
     if (!toEdit) return;
     setIsUpdating(true);
     try {
-      const response = await apiFetch<EnlaceResponse>(`/api/management/links/${toEdit.id}`, {
+      const response = await apiFetch<EnlaceResponse>(`/api/management/signatures/${toEdit.id}`, {
         method: 'PUT',
         body: JSON.stringify(data)
       });
@@ -331,9 +330,9 @@ export function LinkList() {
     return (
       <EmptyState
         icon={LinkIcon}
-        title="Sin enlaces todavía"
-        description="Crea tu primer enlace corto, QR o firma digital desde el panel de herramientas."
-        actionLabel="Ir a Herramientas"
+        title="Sin firmas todavía"
+        description="Crea tu primera firma digital desde el panel de herramientas."
+        actionLabel="Crear Firma"
         onAction={() => router.push('/dashboard')}
       />
     );

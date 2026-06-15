@@ -31,6 +31,7 @@ export function ImageConverterTool() {
   const [isUpsellModalOpen, setIsUpsellModalOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [watermarkFile, setWatermarkFile] = useState<File | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -111,6 +112,9 @@ export function ImageConverterTool() {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('format', selectedFormat);
+        if (watermarkFile && plan === 'PRO') {
+          formData.append('watermark', watermarkFile);
+        }
 
         // Usamos apiFetch para mantener la consistencia con el token y el endpoint
         const blob = await apiFetch<Blob>('/api/v1/tools/convert-image', {
@@ -261,6 +265,45 @@ export function ImageConverterTool() {
               </button>
             ))}
           </div>
+        </div>
+
+        {/* Marca de Agua */}
+        <div className="space-y-4">
+          <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">Marca de Agua (Premium)</h3>
+          {plan === 'PRO' ? (
+            <div className="flex items-center gap-4">
+              <input
+                type="file"
+                id="watermark-upload"
+                accept="image/png"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) setWatermarkFile(f);
+                }}
+              />
+              <label 
+                htmlFor="watermark-upload"
+                className="cursor-pointer flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-brand-turquoise text-sm font-bold text-brand-turquoise hover:bg-brand-turquoise/5 transition-colors"
+              >
+                <Upload size={16} />
+                {watermarkFile ? watermarkFile.name : 'Subir Marca de Agua (PNG)'}
+              </label>
+              {watermarkFile && (
+                <button 
+                  onClick={() => setWatermarkFile(null)}
+                  className="text-slate-400 hover:text-red-500"
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-500 flex items-start gap-2">
+              <AlertCircle size={16} className="text-brand-mustard shrink-0" />
+              <span>Actualiza a Premium para subir tu propia marca de agua. Las imágenes de usuarios gratuitos incluirán una marca de agua predeterminada de la plataforma.</span>
+            </div>
+          )}
         </div>
 
         {/* Convert Button */}
