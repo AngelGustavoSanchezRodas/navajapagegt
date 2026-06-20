@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { DashboardLayoutClient } from "./DashboardLayoutClient";
+import { DashboardLayoutClient } from "../DashboardLayoutClient";
 
 export const metadata: Metadata = { 
   title: "Dashboard | NavajaGT", 
