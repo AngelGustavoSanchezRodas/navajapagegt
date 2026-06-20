@@ -54,15 +54,16 @@ export function DashboardTopbar({ activeTab, onTabChange }: DashboardTopbarProps
                   key={tab.id}
                   href="/dashboard"
                   onClick={() => onTabChange(tab.id)}
+                  title={tab.label}
                   className={cn(
-                    "flex items-center gap-2 whitespace-nowrap px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 active:scale-95 shrink-0",
+                    "flex items-center justify-center gap-2 whitespace-nowrap p-2.5 md:px-4 md:py-2 rounded-full text-sm font-bold transition-all duration-300 active:scale-95 shrink-0",
                     isActive
                       ? activeClasses
                       : "text-slate-500 hover:bg-slate-100 hover:text-slate-900"
                   )}
                 >
                   <tab.icon size={16} className={cn("transition-transform duration-300", isActive && "scale-110")} />
-                  {tab.label}
+                  <span className="hidden md:inline-block">{tab.label}</span>
                 </Link>
               );
             })}

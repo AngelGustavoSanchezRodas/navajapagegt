@@ -38,7 +38,7 @@ export function DashboardSidebar() {
   ];
 
   return (
-    <aside className="hidden md:flex w-64 flex-col bg-white border-r border-slate-200/60 sticky top-0 h-screen transition-all duration-300">
+    <aside className="flex w-64 flex-col bg-white border-r border-slate-200/60 sticky top-0 h-screen transition-all duration-300">
       <div className="p-8">
         <BrandLogo />
       </div>

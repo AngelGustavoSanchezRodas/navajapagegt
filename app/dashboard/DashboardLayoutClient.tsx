@@ -15,7 +15,9 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-slate-50/50">
       {/* Sidebar Desktop */}
-      <DashboardSidebar />
+      <div className="hidden md:block">
+        <DashboardSidebar />
+      </div>
 
       {/* Main App Shell */}
       <div className="flex-1 flex flex-col min-w-0">
@@ -41,7 +43,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
         )}
 
         {/* Page Content */}
-        <main key={pathname} className="flex-1 w-full max-w-5xl mx-auto pb-24 md:pb-8 pt-16 md:pt-24 px-4 md:px-8 overflow-y-auto">
+        <main key={pathname} className="flex-1 w-full max-w-5xl mx-auto pt-4 pb-24 md:py-8 px-4 md:px-8 overflow-y-auto">
           {children}
         </main>
       </div>
