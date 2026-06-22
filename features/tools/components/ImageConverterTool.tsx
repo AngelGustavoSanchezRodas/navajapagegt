@@ -281,32 +281,45 @@ export function ImageConverterTool() {
         <div className="space-y-4">
           <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">Marca de Agua (Premium)</h3>
           {plan === 'PRO' ? (
-            <div className="flex items-center gap-4">
-              <input
-                type="file"
-                id="watermark-upload"
-                accept="image/png"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) setWatermarkFile(f);
-                }}
-              />
-              <label 
-                htmlFor="watermark-upload"
-                className="cursor-pointer flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-brand-turquoise text-sm font-bold text-brand-turquoise hover:bg-brand-turquoise/5 transition-colors"
-              >
-                <Upload size={16} />
-                {watermarkFile ? watermarkFile.name : 'Subir Marca de Agua (PNG)'}
-              </label>
-              {watermarkFile && (
-                <button 
-                  onClick={() => setWatermarkFile(null)}
-                  className="text-slate-400 hover:text-red-500"
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-4">
+                <input
+                  type="file"
+                  id="watermark-upload"
+                  accept="image/png"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) {
+                      // Validación de seguridad y rendimiento en frontend
+                      if (f.size > 2 * 1024 * 1024) {
+                        toast.error("La marca de agua no debe superar los 2MB");
+                        e.target.value = ''; // Reset input
+                        return;
+                      }
+                      setWatermarkFile(f);
+                    }
+                  }}
+                />
+                <label 
+                  htmlFor="watermark-upload"
+                  className="cursor-pointer flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-dashed border-brand-turquoise text-sm font-bold text-brand-turquoise hover:bg-brand-turquoise/5 transition-colors"
                 >
-                  <X size={18} />
-                </button>
-              )}
+                  <Upload size={16} />
+                  {watermarkFile ? watermarkFile.name : 'Subir Marca de Agua (PNG)'}
+                </label>
+                {watermarkFile && (
+                  <button 
+                    onClick={() => setWatermarkFile(null)}
+                    className="text-slate-400 hover:text-red-500 transition-colors"
+                  >
+                    <X size={18} />
+                  </button>
+                )}
+              </div>
+              <p className="text-[11px] text-slate-500 font-medium">
+                💡 <strong className="text-slate-700">Tip PRO:</strong> Sube tu logo sin fondo. El sistema calculará y ajustará su tamaño automáticamente para que encaje perfecto en tus imágenes sin estorbar.
+              </p>
             </div>
           ) : (
             <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium text-slate-500 flex items-start gap-2">
