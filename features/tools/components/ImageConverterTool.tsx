@@ -6,7 +6,6 @@ import React, { useState, useRef, useEffect } from "react";
 import { Upload, X, Download, Loader2, AlertCircle, Lock, Image as ImageIcon } from "lucide-react";
 import { GlassCard } from "@/shared/components/ui/GlassCard";
 import { cn } from "@/shared/lib/utils";
-import { apiFetch } from "@/shared/lib/api";
 import { toast } from "sonner";
 import { useAuth } from "@/shared/contexts/AuthContext";
 import { ProUpgradeModal } from "@/shared/components/ui/ProUpgradeModal";
