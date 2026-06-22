@@ -2,14 +2,20 @@ import Cookies from "js-cookie";
 
 const API_URL = `${process.env.NEXT_PUBLIC_API_URL || ""}/api/auth`;
 
+export interface UserProfile {
+  id: string;
+  nombre: string;
+  email: string;
+  rol: string;
+  plan: string;
+  premium_hasta?: string;
+  premiumHasta?: string;
+}
+
 export interface AuthResponse {
   token?: string;
   message?: string;
-  user?: {
-    id: string;
-    nombre: string;
-    email: string;
-  };
+  user?: UserProfile;
 }
 
 class AuthService {

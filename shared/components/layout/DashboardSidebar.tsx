@@ -20,8 +20,8 @@ import { ProUpgradeModal } from "@/shared/components/ui/ProUpgradeModal";
 export function DashboardSidebar() {
   const pathname = usePathname();
   const [isProModalOpen, setIsProModalOpen] = useState(false);
-  const { user } = useAuth();
-  const isPremium = user?.role === 'ADMIN';
+  const { hasPremiumAccess } = useAuth();
+  const isPremium = hasPremiumAccess;
 
   const sections = [
     {
