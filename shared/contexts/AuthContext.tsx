@@ -5,9 +5,9 @@ import Cookies from "js-cookie";
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  user: { nombre: string; email: string } | null;
+  user: { nombre: string; email: string; role?: string } | null;
   plan: 'FREE' | 'PRO';
-  login: (token: string, user?: { nombre: string; email: string }) => void;
+  login: (token: string, user?: { nombre: string; email: string; role?: string }) => void;
   logout: () => void;
 }
 
@@ -21,7 +21,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return false;
   });
 
-  const [user, setUser] = useState<{ nombre: string; email: string } | null>(() => {
+  const [user, setUser] = useState<{ nombre: string; email: string; role?: string } | null>(() => {
     if (typeof window !== "undefined") {
       const savedUser = localStorage.getItem("user");
       return savedUser ? JSON.parse(savedUser) : null;
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Dummy state for plan. In a real app this would come from a decoded JWT or /me endpoint.
   const [plan] = useState<'FREE' | 'PRO'>('FREE');
 
-  const login = (token: string, userData?: { nombre: string; email: string }) => {
+  const login = (token: string, userData?: { nombre: string; email: string; role?: string }) => {
     Cookies.set("token", token, { expires: 7 }); // 7 días
     if (userData) {
       setUser(userData);

@@ -12,6 +12,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { authService } from "@/modules/auth/services/auth.service";
+import { useAuth } from "@/shared/contexts/AuthContext";
 import { cn } from "@/shared/lib/utils";
 import { BrandLogo } from "./BrandLogo";
 import { ProUpgradeModal } from "@/shared/components/ui/ProUpgradeModal";
@@ -19,6 +20,8 @@ import { ProUpgradeModal } from "@/shared/components/ui/ProUpgradeModal";
 export function DashboardSidebar() {
   const pathname = usePathname();
   const [isProModalOpen, setIsProModalOpen] = useState(false);
+  const { user } = useAuth();
+  const isPremium = user?.role === 'ADMIN';
 
   const sections = [
     {
@@ -77,13 +80,20 @@ export function DashboardSidebar() {
       </nav>
 
       <div className="p-4 border-t border-slate-100 flex flex-col gap-2">
-        <button
-          onClick={() => setIsProModalOpen(true)}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-200 to-yellow-400 px-4 py-3 text-sm font-black uppercase tracking-wider text-amber-900 transition-all hover:shadow-lg hover:shadow-yellow-500/20 active:scale-95 border border-yellow-300"
-        >
-          <Sparkles size={16} className="animate-pulse shrink-0" />
-          <span className="hidden md:block">Upgrade PRO</span>
-        </button>
+        {isPremium ? (
+          <div className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-zinc-800 px-4 py-3 text-xs font-black uppercase tracking-widest text-amber-400 border border-zinc-700 shadow-sm">
+            <Sparkles size={14} className="text-amber-400 animate-pulse shrink-0" />
+            <span className="hidden md:block">Navaja Premium Activo</span>
+          </div>
+        ) : (
+          <button
+            onClick={() => setIsProModalOpen(true)}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-200 to-yellow-400 px-4 py-3 text-sm font-black uppercase tracking-wider text-amber-900 transition-all hover:shadow-lg hover:shadow-yellow-500/20 active:scale-95 border border-yellow-300"
+          >
+            <Sparkles size={16} className="animate-pulse shrink-0" />
+            <span className="hidden md:block">Upgrade PRO</span>
+          </button>
+        )}
       </div>
 
       <ProUpgradeModal 

@@ -364,60 +364,64 @@ export function LinkList() {
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
               <tr>
-                <th className="px-6 py-4">Nombre / Destino</th>
-                <th className="px-6 py-4 hidden md:table-cell">Tipo</th>
-                <th className="px-6 py-4 hidden md:table-cell">Creación</th>
-                <th className="px-6 py-4 hidden md:table-cell">Estadísticas</th>
-                <th className="px-6 py-4 text-right">Acciones</th>
+                <th className="px-4 py-4">Nombre / Destino</th>
+                <th className="px-4 py-4 hidden md:table-cell">Tipo</th>
+                <th className="px-4 py-4 hidden md:table-cell">Creación</th>
+                <th className="px-4 py-4 hidden md:table-cell">Estadísticas</th>
+                <th className="px-4 py-4 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
               {links.map((link) => (
-                <tr key={link.id} className="hover:bg-slate-50/80 transition-colors">
+                <tr key={link.id} className="hover:bg-slate-50/80 transition-colors duration-150">
                   {/* Nombre / Destino */}
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-4">
                     <div className="flex flex-col gap-0.5">
                       <span className="font-black text-slate-900 truncate block max-w-[120px] md:max-w-none">/{link.alias}</span>
                       {link.urlOriginal && (
-                        <span className="text-[11px] font-medium text-slate-400 truncate max-w-[240px]">
+                        <span 
+                          className="truncate max-w-[150px] sm:max-w-[250px] block text-slate-400 text-xs font-medium"
+                          title={link.urlOriginal}
+                        >
                           {link.urlOriginal}
                         </span>
                       )}
                     </div>
                   </td>
                   {/* Tipo */}
-                  <td className="px-6 py-4 hidden md:table-cell">
+                  <td className="px-4 py-4 hidden md:table-cell">
                     <TipoBadge tipo={link.tipo} />
                   </td>
                   {/* Fecha */}
-                  <td className="px-6 py-4 text-slate-500 text-xs font-medium whitespace-nowrap hidden md:table-cell">
+                  <td className="px-4 py-4 text-slate-500 text-xs font-medium whitespace-nowrap hidden md:table-cell">
                     {link.fechaCreacion
                       ? new Date(link.fechaCreacion).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
                       : 'Hoy'}
                   </td>
                   {/* Clics */}
-                  <td className="px-6 py-4 hidden md:table-cell">
-                    <span className="text-sm font-black text-slate-700">{link.clicks ?? 0}</span>
-                    <span className="text-[10px] text-slate-400 ml-1">clics</span>
+                  <td className="px-4 py-4 hidden md:table-cell">
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                      {link.clicks ?? 0} clics
+                    </span>
                   </td>
                   {/* Acciones */}
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2.5">
+                  <td className="px-4 py-4 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => copy(`${window.location.origin}/${link.codigoCorto || link.alias}`)}
-                        className="flex items-center gap-2 p-2 md:px-4 md:py-2 text-slate-400 hover:text-brand-turquoise hover:bg-slate-50 rounded-lg transition-colors"
+                        className="p-2 rounded-lg hover:bg-slate-100 transition-colors flex items-center gap-2 text-slate-400 hover:text-brand-turquoise"
                         title="Copiar enlace"
                       >
                         <Copy size={16} />
-                        <span className="hidden md:inline-block text-xs font-bold">Copiar</span>
+                        <span className="hidden md:inline text-xs font-bold">Copiar</span>
                       </button>
                       <button
                         onClick={() => setToDelete(link)}
-                        className="flex items-center gap-2 p-2 md:px-4 md:py-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2 text-red-500 hover:text-red-700"
                         title="Eliminar enlace"
                       >
                         <Trash2 size={16} />
-                        <span className="hidden md:inline-block text-xs font-bold">Eliminar</span>
+                        <span className="hidden md:inline text-xs font-bold">Eliminar</span>
                       </button>
                       <ActionsDropdown link={link} onDelete={setToDelete} onEdit={setToEdit} />
                     </div>
