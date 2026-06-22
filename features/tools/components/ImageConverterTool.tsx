@@ -1,5 +1,7 @@
 "use client";
 
+import Cookies from "js-cookie";
+
 import React, { useState, useRef, useEffect } from "react";
 import { Upload, X, Download, Loader2, AlertCircle, Lock, Image as ImageIcon } from "lucide-react";
 import { GlassCard } from "@/shared/components/ui/GlassCard";
@@ -113,15 +115,23 @@ export function ImageConverterTool() {
         formData.append('file', file);
         formData.append('format', selectedFormat);
         if (watermarkFile && plan === 'PRO') {
-          formData.append('watermark', watermarkFile);
+          formData.append('watermarkFile', watermarkFile);
         }
 
-        // Usamos apiFetch para mantener la consistencia con el token y el endpoint
-        const blob = await apiFetch<Blob>('/api/v1/tools/convert-image', {
+        // Usamos fetch nativo para form-data
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/v1/tools/convert-image`, {
           method: "POST",
-          body: formData,
-          responseType: 'blob'
+          headers: {
+            'Authorization': `Bearer ${Cookies.get('token') || ''}`
+          },
+          body: formData
         });
+
+        if (!response.ok) {
+           throw new Error("Error en la conversión de imagen");
+        }
+        
+        const blob = await response.blob();
 
         return { name: file.name, blob };
       });

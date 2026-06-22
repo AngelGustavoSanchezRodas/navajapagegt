@@ -40,7 +40,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchLinks = async () => {
       try {
-        const data = await apiFetch<any[]>('/api/management/links/list/');
+        const data = await apiFetch<any[]>('/api/management/links/list');
         setLinks(data || []);
       } catch (error) {
         setLinks([]);

@@ -43,7 +43,7 @@ export function UrlShortenerTool() {
         body: JSON.stringify({ 
           urlOriginal: url, 
           tipo: 'STANDARD',
-          aliasPersonalizado: alias || null
+          alias: alias || null
         })
       });
       

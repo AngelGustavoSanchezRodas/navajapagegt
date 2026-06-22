@@ -47,6 +47,7 @@ export const ContactQrTool: React.FC = () => {
   const [isUpsellModalOpen, setIsUpsellModalOpen] = useState(false);
   const [selectedPattern, setSelectedPattern] = useState('squares');
   const [logo, setLogo] = useState<File | null>(null);
+  const [logoBase64, setLogoBase64] = useState<string | null>(null);
 
   const PRESET_COLORS = [
     '#000000', '#00E5FF', '#FF0055', '#FFD500', 
@@ -90,6 +91,12 @@ export const ContactQrTool: React.FC = () => {
         return;
       }
       setLogo(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setLogoBase64(base64String);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -135,7 +142,8 @@ export const ContactQrTool: React.FC = () => {
         tipo: tipoBackend,
         payload: payloadData,
         colorFondo: formatHex(backgroundColor),
-        colorFrente: formatHex(foregroundColor)
+        colorFrente: formatHex(foregroundColor),
+        logoBase64: logoBase64
       };
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/tools/qr/generate`, {
