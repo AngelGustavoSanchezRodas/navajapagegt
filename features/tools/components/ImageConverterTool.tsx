@@ -115,7 +115,7 @@ export function ImageConverterTool() {
         formData.append('file', file);
         formData.append('format', selectedFormat);
         if (watermarkFile && plan === 'PRO') {
-          formData.append('watermarkFile', watermarkFile);
+          formData.append('watermark', watermarkFile);
         }
 
         // Usamos fetch nativo para form-data
