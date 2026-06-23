@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Copy, Lock, ChevronDown, Check, Sparkles, User, Building2, Phone, Share2, Save, Loader2, Trash2 } from "lucide-react";
+import { Copy, Lock, ChevronDown, Check, Sparkles, User, Building2, Phone, Share2, Save, Loader2, Trash2, Download } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/shared/contexts/AuthContext";
@@ -83,6 +83,34 @@ export function SignatureBuilder() {
     } catch (error) {
       console.error("Error al copiar:", error);
       toast.error("Error al copiar la firma.");
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    setIsSaving(true);
+    try {
+      // Usamos el apiFetch que ya soporta responseType: 'blob'
+      const blob = await apiFetch<Blob>('/api/v1/tools/identity/pdf', {
+        method: 'POST',
+        responseType: 'blob',
+        body: JSON.stringify(data)
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `CV_${data.nombre || 'NavajaGT'}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success("¡PDF generado correctamente!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error al generar el PDF.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -356,22 +384,33 @@ export function SignatureBuilder() {
           />
         </GlassCard>
 
-        <div className="flex gap-4">
-          <button 
-            onClick={handleCopySignature}
-            className="group flex-1 py-4 bg-slate-900 text-white rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:bg-black transition-all shadow-xl shadow-slate-900/10 active:scale-[0.98]"
-          >
-            <Copy className="w-5 h-5 group-hover:scale-110 transition-transform" />
-            <span className="hidden sm:inline-block">Copiar</span>
-          </button>
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-4">
+            <button 
+              onClick={handleCopySignature}
+              className="group flex-1 py-4 bg-slate-900 text-white rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:bg-black transition-all shadow-xl shadow-slate-900/10 active:scale-[0.98]"
+            >
+              <Copy className="w-5 h-5 group-hover:scale-110 transition-transform" />
+              <span className="hidden sm:inline-block">Copiar</span>
+            </button>
+            
+            <button 
+              onClick={handleSaveSignature}
+              disabled={isSaving}
+              className="group flex-1 py-4 bg-brand-turquoise text-slate-900 rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:bg-brand-turquoise/90 transition-all shadow-xl shadow-brand-turquoise/20 active:scale-[0.98] disabled:opacity-50"
+            >
+              {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5 group-hover:scale-110 transition-transform" />}
+              Guardar
+            </button>
+          </div>
           
           <button 
-            onClick={handleSaveSignature}
+            onClick={handleDownloadPDF}
             disabled={isSaving}
-            className="group flex-1 py-4 bg-brand-turquoise text-slate-900 rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:bg-brand-turquoise/90 transition-all shadow-xl shadow-brand-turquoise/20 active:scale-[0.98] disabled:opacity-50"
+            className="group w-full py-4 bg-white border-2 border-slate-200 text-slate-700 rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:border-brand-turquoise hover:text-brand-turquoise transition-all active:scale-[0.98] disabled:opacity-50"
           >
-            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5 group-hover:scale-110 transition-transform" />}
-            Guardar
+            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />}
+            Descargar PDF
           </button>
         </div>
       </div>
