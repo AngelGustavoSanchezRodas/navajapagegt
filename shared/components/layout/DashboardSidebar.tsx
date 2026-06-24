@@ -21,7 +21,7 @@ export function DashboardSidebar() {
   const pathname = usePathname();
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const { user } = useAuth();
-  const hasAccess = user?.role === 'ADMIN' || user?.role === 'PREMIUM';
+  const hasAccess = user?.rol === 'ADMIN' || user?.rol === 'PREMIUM';
 
   const sections = [
     {
