@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-import { Copy, Lock, ChevronDown, Check, Sparkles, User, Building2, Phone, Share2, Save, Loader2, Trash2, Download } from "lucide-react";
+import { Copy, Lock, ChevronDown, Check, Sparkles, User, Building2, Phone, Share2, Save, Loader2, Trash2, Download, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/shared/contexts/AuthContext";
