@@ -9,7 +9,7 @@ import { ProUpgradeModal } from "@/shared/components/ui/ProUpgradeModal";
 import { GlassCard } from "@/shared/components/ui/GlassCard";
 import { cn } from "@/shared/lib/utils";
 import { apiFetch } from "@/shared/lib/api";
-import { SignaturePreview, SignatureData } from "./SignaturePreview";
+import { SignaturePreview, IdentityData } from "./SignaturePreview";
 import { useLocalStorage } from "@/shared/hooks/useLocalStorage";
 
 const TEMPLATES = [
@@ -26,14 +26,14 @@ export function SignatureBuilder() {
   const [templateId, setTemplateId] = useState('minimal');
   const [isSaving, setIsSaving] = useState(false);
   
-  const [data, setData, removeData] = useLocalStorage<SignatureData>('signatureData', {
+  const [data, setData, removeData] = useLocalStorage<IdentityData>('signatureData', {
     nombre: '',
     cargo: '',
     empresa: '',
+    descripcion: '',
     email: '',
     telefono: '',
     sitioWeb: '',
-    photoUrl: '',
     linkedin: '',
     twitter: '',
     github: '',
@@ -65,24 +65,34 @@ export function SignatureBuilder() {
     setTemplateId(id);
   };
 
-  const handleInputChange = (field: keyof SignatureData, value: string) => {
+  const handleInputChange = (field: keyof IdentityData, value: string) => {
     setData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleCopySignature = async () => {
-    if (!previewRef.current) return;
-    
-    // Extracción limpia del HTML renderizado
-    const htmlContent = previewRef.current.innerHTML;
-    
+  const handleDownloadVCard = async () => {
+    setIsSaving(true);
     try {
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const clipboardItem = new ClipboardItem({ 'text/html': blob });
-      await navigator.clipboard.write([clipboardItem]);
-      toast.success("¡Firma copiada! Pégala en Gmail o Outlook.");
+      const blob = await apiFetch<Blob>('/api/v1/tools/identity/vcard', {
+        method: 'POST',
+        responseType: 'blob',
+        body: JSON.stringify(data)
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Contact_${data.nombre || 'NavajaGT'}.vcf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      
+      toast.success("¡vCard descargada correctamente!");
     } catch (error) {
-      console.error("Error al copiar:", error);
-      toast.error("Error al copiar la firma.");
+      console.error(error);
+      toast.error("Error al generar la vCard.");
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -114,36 +124,7 @@ export function SignatureBuilder() {
     }
   };
 
-  const handleSaveSignature = async () => {
-    setIsSaving(true);
-    try {
-      const payload = {
-        urlOriginal: "https://navaja.gt/signature-preview",
-        tipo: "SIGNATURE",
-        metadata: {
-          ...data,
-          templateId
-        }
-      };
 
-      await apiFetch('/api/core/links/create', {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      });
-      
-      toast.success("¡Firma guardada correctamente!");
-    } catch (error: any) {
-      if (error.status === 402 || error.status === 403) {
-        setIsProModalOpen(true);
-        toast.error(error.message || 'La plantilla seleccionada es exclusiva del plan PRO.');
-        return;
-      }
-      console.error("Error al guardar:", error);
-      toast.error("Error al guardar la firma en tu cuenta.");
-    } finally {
-      setIsSaving(false);
-    }
-  };
 
   const AccordionHeader = ({ id, title, icon: Icon }: { id: string, title: string, icon: any }) => (
     <button 
@@ -206,15 +187,14 @@ export function SignatureBuilder() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">URL de Foto (Avatar)</label>
-                      <input 
-                        type="text" 
-                        value={data.photoUrl}
-                        onChange={(e) => handleInputChange('photoUrl', e.target.value)}
-                        placeholder="https://ejemplo.com/mifoto.jpg"
-                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-brand-turquoise focus:ring-2 focus:ring-brand-turquoise/20 transition-all"
+                      <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Breve Biografía</label>
+                      <textarea 
+                        value={data.descripcion}
+                        onChange={(e) => handleInputChange('descripcion', e.target.value)}
+                        placeholder="Ej. Soy un profesional apasionado por la tecnología..."
+                        rows={3}
+                        className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-brand-turquoise focus:ring-2 focus:ring-brand-turquoise/20 transition-all resize-none"
                       />
-                      <p className="text-[10px] text-slate-400 font-medium px-1">Usa enlaces directos (.jpg, .png)</p>
                     </div>
                   </div>
                 </motion.div>
@@ -328,8 +308,8 @@ export function SignatureBuilder() {
                           <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">{platform}</label>
                           <input 
                             type="url" 
-                            value={data[platform as keyof SignatureData] || ''}
-                            onChange={(e) => handleInputChange(platform as keyof SignatureData, e.target.value)}
+                            value={data[platform as keyof IdentityData] || ''}
+                            onChange={(e) => handleInputChange(platform as keyof IdentityData, e.target.value)}
                             placeholder={`https://${platform}.com/...`}
                             className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium outline-none focus:border-brand-turquoise focus:ring-2 focus:ring-brand-turquoise/20 transition-all"
                           />
@@ -385,32 +365,22 @@ export function SignatureBuilder() {
         </GlassCard>
 
         <div className="flex flex-col gap-4">
-          <div className="flex gap-4">
-            <button 
-              onClick={handleCopySignature}
-              className="group flex-1 py-4 bg-slate-900 text-white rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:bg-black transition-all shadow-xl shadow-slate-900/10 active:scale-[0.98]"
-            >
-              <Copy className="w-5 h-5 group-hover:scale-110 transition-transform" />
-              <span className="hidden sm:inline-block">Copiar</span>
-            </button>
-            
-            <button 
-              onClick={handleSaveSignature}
-              disabled={isSaving}
-              className="group flex-1 py-4 bg-brand-turquoise text-slate-900 rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:bg-brand-turquoise/90 transition-all shadow-xl shadow-brand-turquoise/20 active:scale-[0.98] disabled:opacity-50"
-            >
-              {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5 group-hover:scale-110 transition-transform" />}
-              Guardar
-            </button>
-          </div>
-          
           <button 
             onClick={handleDownloadPDF}
             disabled={isSaving}
-            className="group w-full py-4 bg-white border-2 border-slate-200 text-slate-700 rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:border-brand-turquoise hover:text-brand-turquoise transition-all active:scale-[0.98] disabled:opacity-50"
+            className="group w-full py-4 bg-slate-900 text-white rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:bg-black transition-all shadow-xl shadow-slate-900/10 active:scale-[0.98] disabled:opacity-50"
           >
-            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5 group-hover:-translate-y-1 transition-transform" />}
-            Descargar PDF
+            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <FileText className="w-5 h-5 group-hover:scale-110 transition-transform" />}
+            Descargar CV Express (PDF)
+          </button>
+          
+          <button 
+            onClick={handleDownloadVCard}
+            disabled={isSaving}
+            className="group w-full py-4 bg-brand-turquoise text-slate-900 rounded-[1.5rem] font-black uppercase tracking-[0.1em] flex items-center justify-center gap-2 hover:bg-brand-turquoise/90 transition-all shadow-xl shadow-brand-turquoise/20 active:scale-[0.98] disabled:opacity-50"
+          >
+            {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <User className="w-5 h-5 group-hover:scale-110 transition-transform" />}
+            Descargar Smart Contact (vCard)
           </button>
         </div>
       </div>

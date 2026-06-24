@@ -1,13 +1,14 @@
 import React, { forwardRef } from 'react';
+import { FileText, Smartphone } from 'lucide-react';
 
-export interface SignatureData {
+export interface IdentityData {
   nombre: string;
   cargo: string;
   empresa: string;
+  descripcion: string;
   email: string;
   telefono: string;
   sitioWeb: string;
-  photoUrl: string;
   github?: string;
   linkedin?: string;
   twitter?: string;
@@ -25,130 +26,29 @@ export interface SignatureData {
 }
 
 interface SignaturePreviewProps {
-  data: SignatureData;
+  data: IdentityData;
   plan: 'FREE' | 'PRO';
   templateId: string;
 }
 
 export const SignaturePreview = forwardRef<HTMLDivElement, SignaturePreviewProps>(
   ({ data, plan, templateId }, ref) => {
-    // Definimos colores basados en la paleta de NavajaGT para la plantilla por defecto
-    const primaryColor = '#0F172A'; // slate-900
-    const accentColor = '#2DD4BF';  // brand-turquoise
-    const textColor = '#64748B';    // slate-500
-
     return (
-      <div ref={ref} style={{ backgroundColor: '#ffffff', padding: '20px' }}>
-        {/* Usamos tablas estrcitas para compatibilidad con Outlook */}
-        <table cellPadding={0} cellSpacing={0} border={0} style={{ fontFamily: 'Arial, sans-serif', fontSize: '14px', color: primaryColor, width: '100%', maxWidth: '500px' }}>
-          <tbody>
-            <tr>
-              {data.photoUrl && (
-                <td style={{ paddingRight: '20px', verticalAlign: 'top', width: '100px' }}>
-                  <img
-                    src={data.photoUrl}
-                    alt={data.nombre}
-                    width={100}
-                    height={100}
-                    style={{ borderRadius: '50%', objectFit: 'cover', width: '100px', height: '100px', display: 'block', border: `3px solid ${accentColor}` }}
-                  />
-                </td>
-              )}
-              <td style={{ verticalAlign: 'top' }}>
-                <table cellPadding={0} cellSpacing={0} border={0}>
-                  <tbody>
-                    <tr>
-                      <td style={{ fontSize: '18px', fontWeight: 'bold', color: primaryColor, paddingBottom: '4px' }}>
-                        {data.nombre || 'Tu Nombre'}
-                      </td>
-                    </tr>
-                    {(data.cargo || data.empresa) && (
-                      <tr>
-                        <td style={{ fontSize: '14px', color: textColor, paddingBottom: '12px' }}>
-                          <span style={{ fontWeight: 'bold' }}>{data.cargo || 'Tu Cargo'}</span>
-                          {data.cargo && data.empresa && ' | '}
-                          <span>{data.empresa || 'Tu Empresa'}</span>
-                        </td>
-                      </tr>
-                    )}
-                    <tr>
-                      <td style={{ borderBottom: `2px solid ${accentColor}`, paddingBottom: '12px' }}></td>
-                    </tr>
-                    <tr>
-                      <td style={{ paddingTop: '12px' }}>
-                        <table cellPadding={0} cellSpacing={0} border={0} style={{ fontSize: '12px', color: textColor }}>
-                          <tbody>
-                            {data.telefono && (
-                              <tr>
-                                <td style={{ paddingBottom: '4px' }}>
-                                  <span style={{ color: accentColor, fontWeight: 'bold', marginRight: '6px' }}>T</span> 
-                                  <a href={`tel:${data.telefono}`} style={{ color: textColor, textDecoration: 'none' }}>{data.telefono}</a>
-                                </td>
-                              </tr>
-                            )}
-                            {data.email && (
-                              <tr>
-                                <td style={{ paddingBottom: '4px' }}>
-                                  <span style={{ color: accentColor, fontWeight: 'bold', marginRight: '6px' }}>E</span> 
-                                  <a href={`mailto:${data.email}`} style={{ color: textColor, textDecoration: 'none' }}>{data.email}</a>
-                                </td>
-                              </tr>
-                            )}
-                            {data.sitioWeb && (
-                              <tr>
-                                <td style={{ paddingBottom: '4px' }}>
-                                  <span style={{ color: accentColor, fontWeight: 'bold', marginRight: '6px' }}>W</span> 
-                                  <a href={data.sitioWeb} target="_blank" rel="noopener noreferrer" style={{ color: textColor, textDecoration: 'none' }}>{data.sitioWeb.replace(/^https?:\/\//, '')}</a>
-                                </td>
-                              </tr>
-                            )}
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                    
-                    {/* Social Links */}
-                    {Object.keys(data).filter(key => ['github', 'linkedin', 'twitter', 'tiktok', 'youtube', 'twitch', 'discord', 'reddit', 'behance', 'dribbble', 'gitlab', 'medium', 'devto', 'stackoverflow'].includes(key) && data[key as keyof SignatureData]).length > 0 && (
-                      <tr>
-                        <td style={{ paddingTop: '12px' }}>
-                          <table cellPadding={0} cellSpacing={0} border={0}>
-                            <tbody>
-                              <tr>
-                                {['github', 'linkedin', 'twitter', 'tiktok', 'youtube', 'twitch', 'discord', 'reddit', 'behance', 'dribbble', 'gitlab', 'medium', 'devto', 'stackoverflow'].map((platform) => {
-                                  const url = data[platform as keyof SignatureData];
-                                  if (!url) return null;
-                                  
-                                  const label = platform.charAt(0).toUpperCase() + platform.slice(1);
-                                  
-                                  return (
-                                    <td key={platform} style={{ paddingRight: '12px' }}>
-                                      <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: primaryColor, textDecoration: 'none', fontSize: '11px', fontWeight: 'bold' }}>
-                                        {label}
-                                      </a>
-                                    </td>
-                                  );
-                                })}
-                              </tr>
-                            </tbody>
-                          </table>
-                        </td>
-                      </tr>
-                    )}
-
-                    {/* Inyección Viral PLG para usuarios FREE */}
-                    {plan === 'FREE' && (
-                      <tr>
-                        <td style={{ paddingTop: '16px', fontSize: '10px', color: '#999999', fontFamily: 'Arial, sans-serif' }}>
-                          Generado gratis con <a href="https://navaja.gt" style={{ color: accentColor, textDecoration: 'none', fontWeight: 'bold' }}>NavajaGT</a>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div ref={ref} className="w-full flex flex-col items-center justify-center p-8 space-y-6 text-center">
+        <div className="bg-brand-turquoise/10 p-6 rounded-full">
+          <FileText className="w-16 h-16 text-brand-turquoise" />
+        </div>
+        <div>
+          <h3 className="text-xl font-bold text-slate-900 mb-2">Generador de Identidad Digital</h3>
+          <p className="text-slate-500 text-sm max-w-sm mx-auto">
+            Completa tus datos en el formulario para generar tu CV interactivo en PDF o tu tarjeta de contacto (vCard) descargable al instante.
+          </p>
+        </div>
+        <div className="flex items-center gap-4 text-xs font-bold uppercase tracking-wider text-slate-400 mt-4">
+          <div className="flex items-center gap-1.5"><FileText size={14} /> PDF</div>
+          <span>•</span>
+          <div className="flex items-center gap-1.5"><Smartphone size={14} /> vCard</div>
+        </div>
       </div>
     );
   }
