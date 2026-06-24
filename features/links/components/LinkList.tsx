@@ -19,8 +19,8 @@ import { toast } from 'sonner';
 import { apiFetch } from '@/shared/lib/api';
 import { EnlaceResponse } from '@/types/biolink';
 import { EmptyState } from '@/shared/components/ui/EmptyState';
-import { GlassCard } from '@/shared/components/ui/GlassCard';
 import { cn } from '@/shared/lib/utils';
+import { QRCodeSVG } from 'qrcode.react';
 import { useCopyToClipboard } from '@/shared/hooks/useCopyToClipboard';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
@@ -41,75 +41,6 @@ function TipoBadge({ tipo }: { tipo: string }) {
   );
 }
 
-// ── Menú de acciones por fila ──────────────────────────────
-function ActionsDropdown({ link, onDelete, onEdit }: { link: EnlaceResponse; onDelete: (link: EnlaceResponse) => void; onEdit: (link: EnlaceResponse) => void; }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const { copy, copied } = useCopyToClipboard();
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
-  const handleCopy = () => {
-    copy(`${window.location.origin}/${link.alias}`);
-    toast.success('¡Enlace copiado al portapapeles!');
-    setOpen(false);
-  };
-
-  return (
-    <div ref={ref} className="relative inline-block">
-      <button
-        onClick={() => setOpen(!open)}
-        className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
-        title="Acciones"
-      >
-        <MoreVertical size={16} />
-      </button>
-
-      {open && (
-        <div className="absolute right-0 mt-1 w-44 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-150">
-          <button
-            onClick={handleCopy}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors"
-          >
-            {copied ? <Check size={15} className="text-emerald-500" /> : <Copy size={15} />}
-            Copiar enlace
-          </button>
-          <a
-            href={`/${link.alias}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors"
-          >
-            <ExternalLink size={15} />
-            Visitar
-          </a>
-          <button
-            onClick={() => { onEdit(link); setOpen(false); }}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-bold text-amber-600 hover:bg-amber-50 transition-colors"
-          >
-            <Edit2 size={15} />
-            Editar
-          </button>
-          <div className="border-t border-slate-100 my-1" />
-          <button
-            onClick={() => { onDelete(link); setOpen(false); }}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 transition-colors"
-          >
-            <Trash2 size={15} />
-            Eliminar
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ── Modal de confirmación de eliminación ───────────────────
 function DeleteModal({ link, onConfirm, onCancel, isDeleting }: {
@@ -359,79 +290,117 @@ export function LinkList() {
         />
       )}
 
-      <GlassCard className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white">
-        <div className="w-full overflow-x-auto rounded-lg">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
-              <tr>
-                <th className="px-4 py-4">Nombre / Destino</th>
-                <th className="px-4 py-4 hidden md:table-cell">Tipo</th>
-                <th className="px-4 py-4 hidden md:table-cell">Creación</th>
-                <th className="px-4 py-4 hidden md:table-cell">Estadísticas</th>
-                <th className="px-4 py-4 text-right">Acciones</th>
+      <div className="w-full overflow-x-auto bg-white border border-slate-200/60 rounded-xl shadow-sm">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold uppercase tracking-wider text-[10px]">
+            <tr>
+              <th className="px-4 py-3 w-16">QR</th>
+              <th className="px-4 py-3">Nombre / Destino</th>
+              <th className="px-4 py-3 hidden md:table-cell">Tipo</th>
+              <th className="px-4 py-3 hidden md:table-cell">Creación</th>
+              <th className="px-4 py-3 hidden md:table-cell">Estadísticas</th>
+              <th className="px-4 py-3 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {links.map((link) => (
+              <tr key={link.id} className="hover:bg-slate-50/50 transition-colors">
+                {/* QR Miniature */}
+                <td className="px-4 py-3">
+                  <div 
+                    className="w-10 h-10 bg-white border border-slate-200 rounded-lg p-1 flex items-center justify-center cursor-pointer hover:border-brand-turquoise transition-colors"
+                    title="Haz clic para ver/descargar QR"
+                    onClick={() => {
+                      // Implementación rápida de descarga en SVG para el miniatura
+                      const svg = document.getElementById(`qr-${link.id}`);
+                      if (svg) {
+                        const serializer = new XMLSerializer();
+                        let source = serializer.serializeToString(svg);
+                        if (!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)) {
+                            source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+                        }
+                        const url = "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(source);
+                        const linkDownload = document.createElement("a");
+                        linkDownload.href = url;
+                        linkDownload.download = `QR_${link.alias}.svg`;
+                        document.body.appendChild(linkDownload);
+                        linkDownload.click();
+                        document.body.removeChild(linkDownload);
+                      }
+                    }}
+                  >
+                    <QRCodeSVG 
+                      id={`qr-${link.id}`}
+                      value={`${window.location.origin}/${link.codigoCorto || link.alias}`} 
+                      size={30} 
+                      level="L" 
+                    />
+                  </div>
+                </td>
+                {/* Nombre / Destino */}
+                <td className="px-4 py-3">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-black text-slate-900 truncate block max-w-[120px] md:max-w-none">/{link.alias}</span>
+                    {link.urlOriginal && (
+                      <span 
+                        className="truncate block max-w-[160px] sm:max-w-[240px] text-xs text-slate-400 font-medium"
+                        title={link.urlOriginal}
+                      >
+                        {link.urlOriginal}
+                      </span>
+                    )}
+                  </div>
+                </td>
+                {/* Tipo */}
+                <td className="px-4 py-3 hidden md:table-cell">
+                  <TipoBadge tipo={link.tipo} />
+                </td>
+                {/* Fecha */}
+                <td className="px-4 py-3 text-slate-500 text-xs font-medium whitespace-nowrap hidden md:table-cell">
+                  {link.fechaCreacion
+                    ? new Date(link.fechaCreacion).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+                    : 'Hoy'}
+                </td>
+                {/* Clics */}
+                <td className="px-4 py-3 hidden md:table-cell">
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                    {link.clicks ?? 0} clics
+                  </span>
+                </td>
+                {/* Acciones */}
+                <td className="px-4 py-3 text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    <button
+                      onClick={() => {
+                        copy(`${window.location.origin}/${link.codigoCorto || link.alias}`);
+                        toast.success('¡Enlace copiado!');
+                      }}
+                      className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-700"
+                      title="Copiar enlace"
+                    >
+                      <Copy size={16} />
+                    </button>
+                    <button
+                      onClick={() => setToEdit(link)}
+                      className="p-2 rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-amber-600"
+                      title="Editar enlace"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button
+                      onClick={() => setToDelete(link)}
+                      className="p-2 rounded-lg hover:bg-red-50 transition-colors text-slate-400 hover:text-red-600"
+                      title="Eliminar enlace"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {links.map((link) => (
-                <tr key={link.id} className="hover:bg-slate-50/80 transition-colors duration-150">
-                  {/* Nombre / Destino */}
-                  <td className="px-4 py-4">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="font-black text-slate-900 truncate block max-w-[120px] md:max-w-none">/{link.alias}</span>
-                      {link.urlOriginal && (
-                        <span 
-                          className="truncate max-w-[150px] sm:max-w-[250px] block text-slate-400 text-xs font-medium"
-                          title={link.urlOriginal}
-                        >
-                          {link.urlOriginal}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  {/* Tipo */}
-                  <td className="px-4 py-4 hidden md:table-cell">
-                    <TipoBadge tipo={link.tipo} />
-                  </td>
-                  {/* Fecha */}
-                  <td className="px-4 py-4 text-slate-500 text-xs font-medium whitespace-nowrap hidden md:table-cell">
-                    {link.fechaCreacion
-                      ? new Date(link.fechaCreacion).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
-                      : 'Hoy'}
-                  </td>
-                  {/* Clics */}
-                  <td className="px-4 py-4 hidden md:table-cell">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
-                      {link.clicks ?? 0} clics
-                    </span>
-                  </td>
-                  {/* Acciones */}
-                  <td className="px-4 py-4 text-right">
-                    <div className="flex items-center justify-end gap-1.5">
-                      <button
-                        onClick={() => copy(`${window.location.origin}/${link.codigoCorto || link.alias}`)}
-                        className="p-2 rounded-lg hover:bg-slate-100 transition-colors flex items-center gap-2 text-slate-400 hover:text-brand-turquoise"
-                        title="Copiar enlace"
-                      >
-                        <Copy size={16} />
-                        <span className="hidden md:inline text-xs font-bold">Copiar</span>
-                      </button>
-                      <button
-                        onClick={() => setToDelete(link)}
-                        className="p-2 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-2 text-red-500 hover:text-red-700"
-                        title="Eliminar enlace"
-                      >
-                        <Trash2 size={16} />
-                        <span className="hidden md:inline text-xs font-bold">Eliminar</span>
-                      </button>
-                      <ActionsDropdown link={link} onDelete={setToDelete} onEdit={setToEdit} />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </GlassCard>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }

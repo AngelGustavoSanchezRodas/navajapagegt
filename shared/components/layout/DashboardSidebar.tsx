@@ -20,8 +20,8 @@ import { ProUpgradeModal } from "@/shared/components/ui/ProUpgradeModal";
 export function DashboardSidebar() {
   const pathname = usePathname();
   const [isProModalOpen, setIsProModalOpen] = useState(false);
-  const { hasPremiumAccess } = useAuth();
-  const isPremium = hasPremiumAccess;
+  const { user } = useAuth();
+  const hasAccess = user?.role === 'ADMIN' || user?.role === 'PREMIUM';
 
   const sections = [
     {
@@ -80,10 +80,9 @@ export function DashboardSidebar() {
       </nav>
 
       <div className="p-4 border-t border-slate-100 flex flex-col gap-2">
-        {isPremium ? (
-          <div className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 to-zinc-800 px-4 py-3 text-xs font-black uppercase tracking-widest text-amber-400 border border-zinc-700 shadow-sm">
-            <Sparkles size={14} className="text-amber-400 animate-pulse shrink-0" />
-            <span className="hidden md:block">Navaja Premium Activo</span>
+        {hasAccess ? (
+          <div className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 border border-zinc-800 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-zinc-400">
+            Plan Premium Activo
           </div>
         ) : (
           <button

@@ -126,7 +126,7 @@ export default function DashboardPage() {
       case 'all':
       default:
         return (
-          <div className="flex flex-col gap-10 animate-in fade-in duration-700">
+          <div className="flex flex-col gap-6 md:gap-8 animate-in fade-in duration-700">
             <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 md:gap-8">
               <div className="space-y-2">
                 <div className="flex items-center gap-2.5 text-brand-turquoise font-black text-[10px] uppercase tracking-[0.25em]">
@@ -173,7 +173,7 @@ export default function DashboardPage() {
                   onClick={() => setActiveTab(tool.id)}
                   className="group text-left w-full transition-all duration-500 hover:-translate-y-1"
                 >
-                  <GlassCard className="h-full flex flex-col items-start gap-6 cursor-pointer rounded-[2.5rem] border-2 border-transparent transition-all group-hover:border-brand-turquoise/20 group-hover:shadow-[0_40px_80px_-16px_rgba(0,0,0,0.1)]">
+                  <GlassCard className="h-full flex flex-col items-start gap-4 cursor-pointer rounded-[2.5rem] border-2 border-transparent transition-all group-hover:border-brand-turquoise/20 group-hover:shadow-[0_40px_80px_-16px_rgba(0,0,0,0.1)] p-5 md:p-6">
                     <div className={cn("p-5 rounded-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3", tool.color)}>
                       <tool.icon className="w-8 h-8" />
                     </div>
@@ -194,7 +194,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex flex-col w-full max-w-7xl mx-auto py-16 px-6 lg:px-10 min-h-screen">
+    <div className="flex flex-col w-full max-w-7xl mx-auto py-4 md:py-6 px-4 md:px-6 lg:px-8 min-h-screen">
       {renderContent()}
     </div>
   );
