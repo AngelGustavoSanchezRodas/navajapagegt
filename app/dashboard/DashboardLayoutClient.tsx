@@ -43,7 +43,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
         )}
 
         {/* Page Content */}
-        <main key={pathname} className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-16 md:py-6 overflow-y-auto">
+        <main key={pathname} className="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-20 md:py-6 overflow-y-auto">
           {children}
         </main>
       </div>

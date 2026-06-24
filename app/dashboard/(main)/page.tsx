@@ -19,8 +19,14 @@ import {
   BarChart3
 } from 'lucide-react';
 import { cn } from "@/shared/lib/utils";
+import { useAuth } from '@/shared/contexts/AuthContext';
+import { ProUpgradeModal } from '@/shared/components/ui/ProUpgradeModal';
+
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+  const isPremiumOrAdmin = user?.rol === 'ADMIN' || user?.rol === 'PREMIUM';
+  const [isProModalOpen, setIsProModalOpen] = useState(false);
   const { activeTab, setActiveTab } = useDashboard();
   const [currentDate, setCurrentDate] = useState('');
 
@@ -126,8 +132,27 @@ export default function DashboardPage() {
       case 'all':
       default:
         return (
-          <div className="flex flex-col gap-6 md:gap-8 animate-in fade-in duration-700">
-            <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 md:gap-8">
+          <div className="flex flex-col animate-in fade-in duration-700">
+            {!isPremiumOrAdmin && (
+              <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl bg-zinc-900 border border-zinc-800 p-4 shadow-sm">
+                <div className="flex items-center gap-3 text-white">
+                  <div className="p-2 bg-brand-mustard/20 rounded-xl">
+                    <Zap size={20} className="text-brand-mustard" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm tracking-tight">Potencia tu impacto con Premium</h3>
+                    <p className="text-xs text-zinc-400 font-medium">Desbloquea herramientas avanzadas y límites extendidos.</p>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setIsProModalOpen(true)}
+                  className="px-5 py-2.5 bg-brand-mustard text-zinc-900 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-brand-mustard/90 transition-all active:scale-95"
+                >
+                  Hazte Premium
+                </button>
+              </div>
+            )}
+            <header className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 md:gap-8 mb-4 md:mb-6">
               <div className="space-y-2">
                 <div className="flex items-center gap-2.5 text-brand-turquoise font-black text-[10px] uppercase tracking-[0.25em]">
                   <Sparkles size={14} className="animate-pulse" />
@@ -166,7 +191,7 @@ export default function DashboardPage() {
               </div>
             </header>
 
-            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+            <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {filteredTools.map((tool) => (
                 <button
                   key={tool.id}
@@ -196,6 +221,11 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col w-full max-w-7xl mx-auto py-4 md:py-6 px-4 md:px-6 lg:px-8 min-h-screen">
       {renderContent()}
+      <ProUpgradeModal 
+        isOpen={isProModalOpen} 
+        onClose={() => setIsProModalOpen(false)} 
+        message="Lleva tu identidad digital al siguiente nivel con nuestras herramientas profesionales."
+      />
     </div>
   );
 }

@@ -33,13 +33,14 @@ export interface MetadataBiolink {
   perfil: PerfilBiolink;
   enlaces: EnlaceItem[];
   redesSociales: RedesSociales;
+  nombreQR?: string;
 }
 
 export interface EnlaceResponse {
   id: string;
   alias: string;
   codigoCorto?: string;
-  tipo: 'BIOLINK' | 'SHORT' | 'SIGNATURE' | 'URL' | 'PHONE' | 'WHATSAPP' | 'EMAIL';
+  tipo: 'BIOLINK' | 'SHORT' | 'SIGNATURE' | 'URL' | 'PHONE' | 'WHATSAPP' | 'EMAIL' | 'QR' | 'STANDARD';
   urlOriginal?: string;
   metadata: MetadataBiolink;
   activo: boolean;
