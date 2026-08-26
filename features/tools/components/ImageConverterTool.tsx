@@ -118,7 +118,7 @@ export function ImageConverterTool() {
         }
 
         // Usamos fetch nativo para form-data
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ''}/api/v1/tools/convert-image`, {
+        const response = await fetch(`/api/v1/tools/convert-image`, {
           method: "POST",
           headers: {
             'Authorization': `Bearer ${Cookies.get('token') || ''}`

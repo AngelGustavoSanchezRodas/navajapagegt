@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL || ""}/api/auth`;
+const API_URL = `/api/auth`;
 
 export interface UserProfile {
   id: string;

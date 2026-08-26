@@ -267,7 +267,7 @@ export function QrList() {
     try {
       const token = Cookies.get('token');
       // Usamos fetch nativo exactamente como indicó el Backend para evitar el parseo forzado a JSON
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/management/qrs/${toDelete.id}`, {
+      const response = await fetch(`/api/management/qrs/${toDelete.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`

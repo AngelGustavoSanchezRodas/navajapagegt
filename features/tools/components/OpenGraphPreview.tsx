@@ -32,7 +32,7 @@ const OpenGraphPreview: React.FC<Props> = ({ url: initialUrl }) => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/tools/opengraph?url=${encodeURIComponent(url)}`);
+        const res = await fetch(`/api/v1/tools/opengraph?url=${encodeURIComponent(url)}`);
         if (!res.ok) throw new Error('Error al obtener la previsualización');
         const json = await res.json();
         setData(json);

@@ -34,11 +34,9 @@ export async function GET(
   }
 
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    
     // 2. Consulta a la API de redirección del backend (Java)
     // Usamos redirect: 'manual' para capturar nosotros mismos los status 3xx
-    const response = await fetch(`${apiUrl}/api/core/links/public/${alias}`, {
+    const response = await fetch(`/api/core/links/public/${alias}`, {
       method: 'GET',
       redirect: 'manual',
       // Añadimos headers mínimos por seguridad

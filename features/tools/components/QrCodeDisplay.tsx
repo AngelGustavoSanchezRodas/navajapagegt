@@ -13,7 +13,7 @@ const QrCodeDisplay: React.FC<Props> = ({ text: initialText }) => {
   const [text, setText] = useState(initialText || '');
   const [isGenerating, setIsGenerating] = useState(false);
 
-  const qrUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/tools/qr?text=${encodeURIComponent(text)}`;
+  const qrUrl = `/api/v1/tools/qr?text=${encodeURIComponent(text)}`;
 
   const handleDownload = async () => {
     if (!text) return;
