@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const API_BASE_URL = '';
 
 export interface ApiOptions extends RequestInit {
   responseType?: 'json' | 'blob';
