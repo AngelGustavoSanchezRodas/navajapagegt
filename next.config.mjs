@@ -1,15 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-    remotePatterns: [
+  async rewrites() {
+    return [
       {
-        protocol: 'https',
-        hostname: '**',
+        source: '/api/:path*',
+        destination: 'https://cassette-voyage-troubling.ngrok-free.dev/api/:path*',
       },
-    ],
+    ];
   },
-  // Eliminamos por completo la configuración manual de Turbopack
-  // para evitar fugas de memoria y bloqueos de CPU.
 };
 
 export default nextConfig;

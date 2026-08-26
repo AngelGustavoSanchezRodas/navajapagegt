@@ -11,12 +11,9 @@ export async function apiFetch<T>(endpoint: string, options: ApiOptions = {}): P
   const token = Cookies.get('token');
 
   const defaultHeaders: Record<string, string> = {
-    'ngrok-skip-browser-warning': 'true' // <--- ¡El pase VIP de Ngrok!
+    'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'true'
   };
-  
-  if (!(fetchOptions.body instanceof FormData)) {
-    defaultHeaders['Content-Type'] = 'application/json';
-  }
 
   if (token) {
     defaultHeaders['Authorization'] = `Bearer ${token}`;
