@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Toaster } from "sonner";
 import { PublicNavbar } from "@/shared/components/layout/PublicNavbar";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -47,6 +48,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
         </AuthProvider>
         <Toaster richColors position="top-center" />
+        <Analytics />
       </body>
     </html>
   );
