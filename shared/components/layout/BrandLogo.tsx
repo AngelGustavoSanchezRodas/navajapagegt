@@ -15,8 +15,8 @@ export function BrandLogo({ className }: BrandLogoProps) {
       <Link href="/" className="text-brand-turquoise hover:opacity-80 transition-opacity">
         NavajaGT
       </Link>
-      <span className="text-gray-500 font-light">✕</span>
-      <a href="https://tripleaestudio.gua.gt" target="_blank" rel="noopener noreferrer" className="hover:text-brand-magenta transition-colors">
+      <span className="text-gray-500 font-light hidden sm:inline">✕</span>
+      <a href="https://tripleaestudio.gua.gt" target="_blank" rel="noopener noreferrer" className="hover:text-brand-magenta transition-colors hidden sm:inline">
         AAA Estudio
       </a>
     </div>

@@ -190,7 +190,7 @@ export function PublicNavbar() {
                 key="guest-ui"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="flex items-center gap-4"
+                className="hidden sm:flex items-center gap-4"
                 aria-label="Navegación principal"
               >
                 <Link
@@ -244,6 +244,23 @@ export function PublicNavbar() {
                   </Link>
                 ))}
               </div>
+              
+              {!isAuthenticated && (
+                <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-slate-100">
+                  <Link 
+                    href="/login" 
+                    className="block text-center rounded-xl px-4 py-3 text-sm font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 transition-colors"
+                  >
+                    Iniciar Sesión
+                  </Link>
+                  <Link 
+                    href="/register" 
+                    className="block text-center rounded-xl px-4 py-3 text-sm font-bold text-white bg-brand-turquoise hover:bg-brand-turquoise/90 transition-colors shadow-sm"
+                  >
+                    Registrarse
+                  </Link>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
