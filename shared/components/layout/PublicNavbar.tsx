@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, LayoutDashboard, Settings, LogOut, ChevronDown, Sparkles, Grid } from "lucide-react";
+import { User, LayoutDashboard, Settings, LogOut, ChevronDown, Sparkles, Grid, Menu, X } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "@/shared/contexts/AuthContext";
 import { BrandLogo } from "./BrandLogo";
@@ -17,15 +17,17 @@ export function PublicNavbar() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
   const [isToolsOpen, setIsToolsOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setIsMounted(true));
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  // Cerrar dropdown al cambiar de ruta
+  // Cerrar dropdown y menu movil al cambiar de ruta
   useEffect(() => {
     setIsDropdownOpen(false);
+    setIsMobileMenuOpen(false);
   }, [pathname]);
 
   if (pathname.startsWith("/dashboard")) {
@@ -206,8 +208,46 @@ export function PublicNavbar() {
               </motion.nav>
             )}
           </AnimatePresence>
+          
+          {/* Mobile Menu Toggle Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 hover:bg-slate-50 hover:text-brand-turquoise transition-colors"
+            aria-label="Abrir menú"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
+      
+      {/* Mobile Menu Dropdown */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden overflow-hidden border-t border-slate-100 bg-white"
+          >
+            <div className="px-4 py-6 space-y-4">
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest px-2">
+                Herramientas
+              </p>
+              <div className="flex flex-col gap-2">
+                {toolsList.map((tool) => (
+                  <Link
+                    key={tool.href}
+                    href={tool.href}
+                    className="block rounded-xl px-4 py-3 text-sm font-bold text-slate-600 hover:bg-brand-turquoise/5 hover:text-brand-turquoise transition-colors"
+                  >
+                    {tool.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       <ProUpgradeModal 
         isOpen={isProModalOpen} 
