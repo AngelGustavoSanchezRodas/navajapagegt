@@ -11,7 +11,6 @@ const SYSTEM_ROUTES = [
   'dashboard', 
   'herramientas', 
   'api', 
-  'bio', 
   'favicon.ico',
   'not-found',
   'error'

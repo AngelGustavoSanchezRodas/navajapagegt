@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch } from '@/shared/lib/api';
-import { EnlaceResponse } from '@/types/biolink';
+import { EnlaceResponse } from '@/types/links';
 import { EmptyState } from '@/shared/components/ui/EmptyState';
 import { cn } from '@/shared/lib/utils';
 import { QRCodeSVG } from 'qrcode.react';

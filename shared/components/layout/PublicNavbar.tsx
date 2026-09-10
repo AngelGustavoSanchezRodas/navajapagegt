@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, LayoutDashboard, Settings, LogOut, ChevronDown, Sparkles, Grid } from "lucide-react";
-import { siteConfig } from "@/shared/config/site";
 import { cn } from "@/shared/lib/utils";
 import { useAuth } from "@/shared/contexts/AuthContext";
 import { BrandLogo } from "./BrandLogo";
