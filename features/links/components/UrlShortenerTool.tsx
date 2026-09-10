@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { Link, Loader2, QrCode, Copy, Check, ExternalLink, Settings2, RefreshCcw, Lock, Clock, Trash2, ArrowRight, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
 import { GlassCard } from "@/shared/components/ui/GlassCard";
 import { ProUpgradeModal } from "@/shared/components/ui/ProUpgradeModal";
 import { useCopyToClipboard } from "@/shared/hooks/useCopyToClipboard";
