@@ -29,6 +29,7 @@ export function useImageConverter({ plan }: UseImageConverterOptions) {
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [isConverting, setIsConverting] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [conversionResult, setConversionResult] = useState<ConversionResult[]>([]);
   const [isProModalOpen, setIsProModalOpen] = useState(false);
@@ -59,17 +60,28 @@ export function useImageConverter({ plan }: UseImageConverterOptions) {
       return;
     }
 
-    const validFiles = selectedFiles.filter(
-      (file) => file.size <= MAX_FILE_SIZE && file.type.startsWith("image/"),
-    );
+    const validFiles: File[] = [];
+    const errors: string[] = [];
 
-    if (validFiles.length !== selectedFiles.length) {
-      toast.error("Algunos archivos fueron ignorados por exceder 5MB o no ser imágenes válidas.");
+    selectedFiles.forEach((file) => {
+      if (file.size > MAX_FILE_SIZE) {
+        errors.push(`"${file.name}" supera el límite de 5MB.`);
+      } else if (!file.type.startsWith("image/")) {
+        errors.push(`"${file.name}" no es un formato de imagen válido.`);
+      } else {
+        validFiles.push(file);
+      }
+    });
+
+    if (errors.length > 0) {
+      setError(errors.join(" "));
+      toast.error("Algunos archivos fueron ignorados.", { description: errors[0] });
+    } else {
+      setError(null);
     }
 
     if (validFiles.length > 0) {
       previews.forEach((url) => URL.revokeObjectURL(url));
-      setError(null);
       setFiles(validFiles);
       setPreviews(validFiles.map((file) => URL.createObjectURL(file)));
     }
@@ -96,14 +108,20 @@ export function useImageConverter({ plan }: UseImageConverterOptions) {
     setFiles([]);
     setPreviews([]);
     setError(null);
+    setProgress(0);
   };
 
   const handleSubmit = async () => {
     if (files.length === 0) return;
 
     setIsConverting(true);
+    setProgress(0);
     setError(null);
     setConversionResult([]);
+
+    const progressInterval = setInterval(() => {
+      setProgress((p) => Math.min(p + 10, 90));
+    }, 200);
 
     try {
       const convertedFiles = await Promise.all(files.map(async (file) => {
@@ -114,13 +132,16 @@ export function useImageConverter({ plan }: UseImageConverterOptions) {
 
         const response = await fetch("/api/v1/tools/convert-image", {
           method: "POST",
-          headers: { Authorization: `******'token') || ""}` },
+          headers: { Authorization: `Bearer ${Cookies.get('token') || ""}` },
           body: formData,
         });
 
         if (!response.ok) throw new Error("Error en la conversión de imagen");
         return { name: file.name, blob: await response.blob() };
       }));
+
+      clearInterval(progressInterval);
+      setProgress(100);
 
       setConversionResult(convertedFiles);
       convertedFiles.forEach(({ name, blob }) => {
@@ -140,13 +161,17 @@ export function useImageConverter({ plan }: UseImageConverterOptions) {
         toast.success(`¡${files.length} archivo(s) convertido(s) con éxito!`);
       }
     } catch (conversionError) {
+      clearInterval(progressInterval);
+      setProgress(0);
       const message = conversionError instanceof Error
         ? conversionError.message
         : "Ocurrió un error en la conversión de algunos archivos.";
       setError(message);
       toast.error(message);
     } finally {
-      setIsConverting(false);
+      setTimeout(() => {
+        setIsConverting(false);
+      }, 500);
     }
   };
 
@@ -155,6 +180,7 @@ export function useImageConverter({ plan }: UseImageConverterOptions) {
     files,
     previews,
     isConverting,
+    progress,
     error,
     conversionResult,
     isProModalOpen,
