@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from "@/shared/contexts/AuthContext";
 import { GlassCard } from "@/shared/components/ui/GlassCard";
-import { LinkIcon, QrCode, Image as ImageIcon, Briefcase } from "lucide-react";
+import { LinkIcon, QrCode, Image as ImageIcon } from "lucide-react";
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth();
@@ -39,14 +39,6 @@ export default function Home() {
       color: "text-brand-magenta",
       bg: "bg-brand-magenta/10"
     },
-    {
-      title: "Firmas B2B",
-      description: "Diseña firmas de correo profesionales, listas para Outlook y Gmail.",
-      href: "/herramientas/signature",
-      icon: Briefcase,
-      color: "text-slate-700",
-      bg: "bg-slate-200"
-    }
   ];
 
   if (!isMounted) return null;

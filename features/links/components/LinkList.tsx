@@ -9,7 +9,6 @@ import {
   MoreVertical,
   Trash2,
   QrCode,
-  FileSignature,
   Globe,
   X,
   Loader2,
@@ -28,7 +27,6 @@ import Cookies from 'js-cookie';
 // ── Badge de tipo ─────────────────────────────────────────
 function TipoBadge({ tipo }: { tipo: string }) {
   const map: Record<string, { label: string; icon: React.ReactNode; cls: string }> = {
-    SIGNATURE: { label: 'Firma',     icon: <FileSignature size={12} />, cls: 'bg-emerald-100 text-emerald-600' },
     STANDARD:  { label: 'Enlace',    icon: <LinkIcon size={12} />,      cls: 'bg-brand-turquoise/10 text-brand-turquoise' },
     QR:        { label: 'Código QR', icon: <QrCode size={12} />,        cls: 'bg-amber-100 text-amber-600' },
   };

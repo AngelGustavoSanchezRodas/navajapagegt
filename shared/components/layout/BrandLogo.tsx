@@ -16,8 +16,8 @@ export function BrandLogo({ className }: BrandLogoProps) {
         NavajaGT
       </Link>
       <span className="text-gray-500 font-light">✕</span>
-      <a href="https://aba-page-nine.vercel.app/" target="_blank" rel="noopener noreferrer" className="hover:text-brand-magenta transition-colors">
-        ABA Estudios
+      <a href="https://tripleaestudio.gua.gt" target="_blank" rel="noopener noreferrer" className="hover:text-brand-magenta transition-colors">
+        AAA Estudio
       </a>
     </div>
   );

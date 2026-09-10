@@ -18,8 +18,8 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "NavajaGT | Herramientas Digitales y Acortador de Enlaces",
-  description: "Optimiza tu presencia digital con nuestro acortador de URLs, generador de códigos QR y más. Una plataforma de ABA Estudios.",
-  keywords: ["acortador de urls", "biolink", "generador qr", "navajagt", "herramientas digitales"],
+  description: "Optimiza tu presencia digital con nuestro acortador de URLs, generador de códigos QR y más. Una plataforma desarrollada por AAA Estudio.",
+  keywords: ["acortador de urls", "biolink", "generador qr", "navajagt", "aaa estudio", "herramientas digitales"],
   openGraph: {
     type: "website",
     locale: "es_GT",

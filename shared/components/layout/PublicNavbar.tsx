@@ -46,8 +46,7 @@ export function PublicNavbar() {
   const toolsList = [
     { label: "Acortador de URLs", href: "/herramientas/acortador" },
     { label: "Generador QR", href: "/herramientas/qr" },
-    { label: "Convertidor de Imágenes", href: "/herramientas/convertidor" },
-    { label: "Firmas B2B", href: "/herramientas/signature" }
+    { label: "Convertidor de Imágenes", href: "/herramientas/convertidor" }
   ];
 
   return (

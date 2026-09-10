@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { UrlShortenerTool } from '@/features/links/components/UrlShortenerTool';
 import { ContactQrTool } from '@/features/tools/components/ContactQrTool';
 import { ImageConverterTool } from '@/features/tools/components/ImageConverterTool';
-import { SignatureBuilder } from '@/features/signatures/components/SignatureBuilder';
 import { apiFetch } from '@/shared/lib/api';
 import { GlassCard } from '@/shared/components/ui/GlassCard';
 import { useDashboard } from '@/shared/contexts/DashboardContext';
@@ -67,14 +66,6 @@ export default function DashboardPage() {
       color: 'bg-brand-turquoise/10 text-brand-turquoise'
     },
     { 
-      id: 'signature', 
-      category: 'signature',
-      name: 'Generador de Firmas B2B', 
-      description: 'Crea firmas de correo profesionales y conectadas.',
-      icon: ImageIcon, 
-      color: 'bg-brand-magenta/10 text-brand-magenta'
-    },
-    { 
       id: 'qr', 
       category: 'qr',
       name: 'Generador QR Pro', 
@@ -108,12 +99,6 @@ export default function DashboardPage() {
         return (
           <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
             <UrlShortenerTool />
-          </div>
-        );
-      case 'signature':
-        return (
-          <div className="animate-in fade-in slide-in-from-bottom-8 duration-500">
-            <SignatureBuilder />
           </div>
         );
       case 'qr':
